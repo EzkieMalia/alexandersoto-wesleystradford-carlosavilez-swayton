@@ -1,5 +1,6 @@
 local Dark = game.Players.LocalPlayer
 local PlayerGui = Dark.PlayerGui
+local Dark2 =  true
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = PlayerGui
@@ -32,6 +33,25 @@ task.wait(.1)
 print("Sucessfully Loaded Script.")
 task.wait(.5)
 print("WAIT FOR EVERYTHING TO LOAD. ~1 MINUTE.")
+
+task.wait(.2)
+for i = 0, 2000, 1 do
+  print("..Loading..NOERROR.")
+end
+
+task.wait(5)
+for i = 0, 2000, 1 do
+  print("FIRST LOAD.. COMPLETE. START LOAD FULL.")
+end
+
+task.wait(5)
+for i = 0, 2000, 1 do
+  print("Request... ACCEPTED.")
+end
+
+task.wait(2)
+print("Loading Main Gui")
+
 task.wait(30)
 local Frame = Instance.new("Frame")
 Frame.Parent = ScreenGui
@@ -46,6 +66,13 @@ FrameStroke.Thickness = 2
 local FrameCorner = Instance.new("UICorner")
 FrameCorner.Parent = Frame
 FrameCorner.CornerRadius = UDim.new(.01)
+
+task.wait(.1)
+while Dark2 == true do
+  print("SIX_SEVEN")
+end
+
+
 
 
 
