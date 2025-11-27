@@ -79,7 +79,17 @@ end)
 
 LoadScript.MouseButton1Click:Connect(function()
     if Dark then
-        loadstring(game:HttpGet(""))()
+        task.wait(.5)
+        LoadScriptFrame.Transparency = 1
+        CloseMainGUIFrame.Transparency = 1
+        MainFrame.Transparency = 1
+        CloseMainGUI.Transparency = 1
+        LoadScript.Transparency = 1
+        LoadScriptStroke.Thickness = 0
+        MainFrameStroke.Thickness = 0
+        CloseMainGUIStroke.Thickness = 0
+        task.wait(.2)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EzkieMalia/alexandersoto/refs/heads/main/HpoNoHp2.lua"))()
         print("Loading.. Bypass.")
     end
 end)
