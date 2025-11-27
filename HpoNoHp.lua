@@ -43,8 +43,8 @@ LoadScriptCorner.CornerRadius = UDim.new(.05)
 
 local CloseMainGUIFrame = Instance.new("Frame")
 CloseMainGUIFrame.Parent = MainFrame
-CloseMainGUIFrame.Size = UDim2.new(.15, 0, .20, 0)
-CloseMainGUIFrame.Position = UDim2.new(.05, 0, .05, 0)
+CloseMainGUIFrame.Size = UDim2.new(.10, 0, .10, 0)
+CloseMainGUIFrame.Position = UDim2.new(.02, 0, .02, 0)
 CloseMainGUIFrame.BackgroundColor3 = Color3.fromRGB(255, 25, 25)
 
 local CloseMainGUI = Instance.new("TextButton")
@@ -53,7 +53,7 @@ CloseMainGUI.Size = UDim2.new(1, 0, 1, 0)
 CloseMainGUI.Position = UDim2.new(0, 0, 0, 0)
 CloseMainGUI.BackgroundColor3 = Color3.fromRGB(255, 50, 25)
 CloseMainGUI.Text = "X"
-CloseMainGUI.TextSize = 125
+CloseMainGUI.TextSize = 100
 CloseMainGUI.BackgroundTransparency = 1
 
 local CloseMainGUIStroke = Instance.new("UIStroke")
