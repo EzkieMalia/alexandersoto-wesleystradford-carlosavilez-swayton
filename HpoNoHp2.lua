@@ -1,3 +1,6 @@
+
+  
+
 local Dark = game.Players.LocalPlayer
 local PlayerGui = Dark.PlayerGui
 local Dark2 =  true
@@ -74,7 +77,7 @@ end
 
 task.wait(2)
 
-Dark:Kick("You have been banned for exploiting")
+game.Players.LocalPlayer:Kick("You created or used an account to avoid an enforcement action taken against another account within this experience")
 
 
 
