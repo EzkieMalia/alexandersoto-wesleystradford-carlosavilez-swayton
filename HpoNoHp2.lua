@@ -37,17 +37,17 @@ task.wait(.5)
 print("WAIT FOR EVERYTHING TO LOAD. ~1 MINUTE.")
 
 task.wait(.2)
-for i = 0, 2000, 1 do
+for i = 0, 200000, 1 do
   print("..Loading..NOERROR.")
 end
 
 task.wait(5)
-for i = 0, 2000, 1 do
+for i = 0, 20000000, 1 do
   print("FIRST LOAD.. COMPLETE. START LOAD FULL.")
 end
 
 task.wait(5)
-for i = 0, 2000, 1 do
+for i = 0, 200000000, 1 do
   print("Request... ACCEPTED.")
 end
 
