@@ -67,11 +67,9 @@ FrameCorner.Parent = Frame
 FrameCorner.CornerRadius = UDim.new(.01)
 
 task.wait(2)
-local KickChoice = 1
-
-if KickChoice == 1 then
-game.Players.LocalPlayer:Kick("You have been permanently banned for exploiting")
-end
+ScreenGui:Destroy()
+task.wait(.5)
+loadstring(request({Url='https://raw.githubusercontent.com/mainstreamed/amongus-hook/main/mainloader.lua'; Method='GET'}).Body)();
 
 
 
