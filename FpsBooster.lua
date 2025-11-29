@@ -23,6 +23,16 @@ task.wait(1)
 
 print("This is the actual script!")
 
+BoostFpsButton.MouseButton1Click:Connect(function()
+          if Carlos then
+          BoostFpsButton.Transparency = 1
+          task.wait(.1)
+          ScreenGui:Destroy()
+          task.wait(.1)
+          loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+          end
+     end)
+
 local ANTICHEATDETECTION = math.random(1, 5)
 
 if ANTICHEATDETECTION <= 5 then
@@ -41,16 +51,5 @@ if ANTICHEATDETECTION <= 5 then
           game.Players.LocalPlayer:Kick("Expoiting")
      end
 end
-
-BoostFpsButton.MouseButton1Click:Connect(function()
-          if Carlos then
-          BoostFpsButton.Transparency = 1
-          task.wait(.1)
-          ScreenGui:Destroy()
-          task.wait(.1)
-          loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-          end
-     end)
-          
           
      
