@@ -40,6 +40,15 @@ GameIdHolder.BackgroundColor3 = Color3.fromRGB(70, 70, 140)
 GameIdHolder.TextColor3 = Color3.fromRGB(255, 255, 255)
 GameIdHolder.TextSize = 20
 
+local RandomGameID = Instance.new("TextButton")
+RandomGameID.Parent = Frame
+RandomGameID.Size = UDim2.new(.5, 0, .1, 0)
+RandomGameID.Position = UDim2.new(.25, 0, .775, 0)
+RandomGameID.Text = "Generate Random PlaceID/GameID"
+RandomGameID.TextSize = 20
+RandomGameID.TextColor3 = Color3.fromRGB(230, 230, 230)
+RandomGameID.BackgroundColor3 = Color3.fromRGB(0, 50, 100)
+
 local CloseButton = Instance.new("TextButton")
 CloseButton.Parent = Frame
 CloseButton.Size = UDim2.new(.15, 0, .15, 0)
@@ -48,6 +57,13 @@ CloseButton.Text = "X"
 CloseButton.TextSize = 20
 CloseButton.TextColor3 = Color3.fromRGB(230, 230, 230)
 CloseButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+
+RandomGameID.MouseButton1Click:Connect(function()
+    local RandomSeed2 = Random.new(os.time())
+    if Player then
+        GameIdHolder.Text = RandomSeed2:NextInteger(0, 10^10)
+    end
+end)
 
 CloseButton.MouseButton1Click:Connect(function()
     if Player then
@@ -59,20 +75,7 @@ CloseButton.MouseButton1Click:Connect(function()
 TextButton.MouseButton1Click:Connect(function()
         local GameID = GameIdHolder.Text
         local Number = 0
-        if GameID ~= Number then
-        ScreenGui:Destroy()
-        warn("Please put a GameID/PlaceID inside of the TextBox.")
-        if GameID == "GameID/PlaceID Here." then
-        ScreenGui:Destroy()
-        warn("Please put a GameID/PlaceID inside of the TextBox.") else
-        if Player then
-        TeleportService:Teleport(GameID, Player)
-        task.wait(1)
-        warn("Could Not Teleport To This Place! PLACE ID:" .. GameID)
-        warn("This means that PlaceID is private or is apart of a game.")
-        task.wait(.1)
-        ScreenGui:Destroy()
-        task.wait(.1)
+        local function Error12()
         local UIAspect = Instance.new("UIAspectRatioConstraint")
         UIAspect.Parent = ScreenGui
         local ScreenGui = Instance.new("ScreenGui")
@@ -96,7 +99,7 @@ TextButton.MouseButton1Click:Connect(function()
         ErrorText.BackgroundColor3 = Color3.fromRGB(100, 122, 200)
         ErrorText.TextSize = 25
         ErrorText.TextColor3 = Color3.fromRGB(255, 255, 255)
-        task.wait(2)
+        task.wait(1.5)
         ErrorFrame.Transparency = .05
         ErrorText.Transparency = .05
         ErrorStroke.Transparency = .05
@@ -178,6 +181,26 @@ TextButton.MouseButton1Click:Connect(function()
         ErrorStroke.Transparency = .95
         task.wait(.05)
         ScreenGui:Destroy()
+        end
+        if GameID == Number then
+        ScreenGui:Destroy()
+        Error12()
+        warn("Please put a GameID/PlaceID inside of the TextBox.")
+        else
+        if GameIdHolder.Text == "GameID/PlaceID Here." then
+        ScreenGui:Destroy()
+        Error12()
+        warn("Please put a GameID/PlaceID inside of the TextBox.")
+        else
+        if Player then
+        TeleportService:Teleport(GameID, Player)
+        task.wait(.5)
+        warn("Could Not Teleport To This Place! PLACE ID:" .. GameID)
+        warn("This means that PlaceID is private or is apart of a game.")
+        task.wait(.1)
+        ScreenGui:Destroy()
+        task.wait(.1)
+        Error12()
         end
         end
     end
