@@ -55,6 +55,13 @@ CloseButton.MouseButton1Click:Connect(function()
 
 TextButton.MouseButton1Click:Connect(function()
         local GameID = GameIdHolder.Text
+        local Number = 0
+        if GameID ~= Number then
+        ScreenGui:Destroy()
+        warn("Please put a GameID/PlaceID inside of the TextBox.")
+        if GameID == "GameID/PlaceID Here." then
+        ScreenGui:Destroy()
+        warn("Please put a GameID/PlaceID inside of the TextBox.") else
         if Player then
         TeleportService:Teleport(GameID, Player)
         task.wait(1)
@@ -166,5 +173,8 @@ TextButton.MouseButton1Click:Connect(function()
         ErrorStroke.Transparency = .95
         task.wait(.05)
         ScreenGui:Destroy()
+        end
+        end
     end
  end)
+
