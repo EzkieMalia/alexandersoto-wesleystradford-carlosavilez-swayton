@@ -5,6 +5,9 @@ local TeleportService = game:GetService("TeleportService")
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = CoreGui
 
+local UIAspect = Instance.new("UIAspectRatioConstraint")
+UIAspect.Parent = ScreenGui
+
 local Frame = Instance.new("Frame")
 Frame.Parent = ScreenGui
 Frame.Size = UDim2.new(.5, 0, .5, 0)
@@ -70,6 +73,8 @@ TextButton.MouseButton1Click:Connect(function()
         task.wait(.1)
         ScreenGui:Destroy()
         task.wait(.1)
+        local UIAspect = Instance.new("UIAspectRatioConstraint")
+        UIAspect.Parent = ScreenGui
         local ScreenGui = Instance.new("ScreenGui")
         ScreenGui.Parent = CoreGui
         local ErrorFrame = Instance.new("Frame")
@@ -177,4 +182,3 @@ TextButton.MouseButton1Click:Connect(function()
         end
     end
  end)
-
