@@ -194,11 +194,10 @@ TextButton.MouseButton1Click:Connect(function()
         else
         if Player then
         TeleportService:Teleport(GameID, Player)
+        ScreenGui:Destroy()
         task.wait(.5)
         warn("Could Not Teleport To This Place! PLACE ID:" .. GameID)
         warn("This means that PlaceID is private or is apart of a game.")
-        task.wait(.1)
-        ScreenGui:Destroy()
         task.wait(.1)
         Error12()
         end
