@@ -1,4 +1,9 @@
-print("aaaa")
+local Secure = setmetatable({}, {
+    __index = function(Idx, Val)
+        return game:GetService(Val)
+    end
+})
+
 local fireratespeed = 2000
 
 local CoreGui = game:GetService("CoreGui")
@@ -84,17 +89,6 @@ AddSpeed.MouseButton1Click:Connect(function()
 if fireratespeed ~= 5000 then
 	fireratespeed = fireratespeed + 100
 	TextLabel.Text = "Firerate speed: " .. fireratespeed
-end
-end)
-
-RemoveSpeed.MouseButton1Click:Connect(function()
-if fireratespeed ~= 0 then
-	fireratespeed = fireratespeed - 100
-	TextLabel.Text = "Firerate speed: " .. fireratespeed
-end
-end)
-
-while true do
 local Actors = getactors()[1];
 run_on_actor(Actors, [[
 for _,v in next, getgc(true) do
@@ -114,5 +108,52 @@ for _,v in next, getgc(true) do
     end;
 end;
 ]])
-task.wait(1.5)
 end
+end)
+
+RemoveSpeed.MouseButton1Click:Connect(function()
+if fireratespeed ~= 0 then
+	fireratespeed = fireratespeed - 100
+	TextLabel.Text = "Firerate speed: " .. fireratespeed
+local Actors = getactors()[1];
+run_on_actor(Actors, [[
+for _,v in next, getgc(true) do
+    if (typeof(v) ~= "table") then
+        continue;
+    end;
+
+    local Key = rawget(v, "flash");
+    if (Key) then
+        local oldfnc; oldfnc = hookfunction(v.recoil_function, function(gun_table, gun_instance)
+            local weapon_states = gun_table["object"]["states"];
+            weapon_states.recoil_up:set(0);
+            weapon_states.recoil_side:set(0);
+            weapon_states.firerate:set(fireratespeed);
+            return oldfnc(gun_table, gun_instance);
+        end);
+    end;
+end;
+]])
+end
+end)
+
+local Actors = getactors()[1];
+run_on_actor(Actors, [[
+for _,v in next, getgc(true) do
+    if (typeof(v) ~= "table") then
+        continue;
+    end;
+
+    local Key = rawget(v, "flash");
+    if (Key) then
+        local oldfnc; oldfnc = hookfunction(v.recoil_function, function(gun_table, gun_instance)
+            local weapon_states = gun_table["object"]["states"];
+            weapon_states.recoil_up:set(0);
+            weapon_states.recoil_side:set(0);
+            weapon_states.firerate:set(fireratespeed);
+            return oldfnc(gun_table, gun_instance);
+        end);
+    end;
+end;
+]])
+print("LOADED!")
