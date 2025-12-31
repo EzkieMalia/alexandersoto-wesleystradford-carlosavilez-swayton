@@ -1,4 +1,4 @@
-ocal Secure = setmetatable({}, {
+local Secure = setmetatable({}, {
     __index = function(Idx, Val)
         return game:GetService(Val)
     end
