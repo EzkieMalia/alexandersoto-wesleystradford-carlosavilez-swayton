@@ -1,6 +1,6 @@
 local Actors = getactors()[1];
-run_on_actor(Actors, [[
-for _,v in next, getgc(true) do
+run_onactor(Actors, [[
+for ,v in next, getgc(true) do
     if (typeof(v) ~= "table") then
         continue;
     end;
@@ -11,7 +11,7 @@ for _,v in next, getgc(true) do
             local weapon_states = gun_table["object"]["states"];
             weapon_states.recoil_up:set(0);
             weapon_states.recoil_side:set(0);
-            weapon_states.firerate:set(2000);
+            weapon_states.firerate:set(2500);
             return oldfnc(gun_table, gun_instance);
         end);
     end;
