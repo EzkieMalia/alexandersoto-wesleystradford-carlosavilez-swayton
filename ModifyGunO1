@@ -1,12 +1,6 @@
-local Secure = setmetatable({}, {
-    __index = function(Idx, Val)
-        return game:GetService(Val)
-    end
-})
-
 local fireratespeed = 2000
 
-local CoreGui = Secure.CoreGui
+local CoreGui = game:GetService("CoreGui")
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = CoreGui
