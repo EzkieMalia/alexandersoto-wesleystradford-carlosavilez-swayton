@@ -1,3 +1,4 @@
+print("aaaa")
 local fireratespeed = 2000
 
 local CoreGui = game:GetService("CoreGui")
