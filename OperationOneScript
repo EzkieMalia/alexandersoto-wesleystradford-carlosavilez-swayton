@@ -1,0 +1,668 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Recoilvertical = 0
+local Recoilside = 0
+local Fireratespeed = 1000
+local GunToggles = false
+local hitboxsize = 1
+local WalkSpeed = {}
+
+local GunToggles = true
+local Teams = game:GetService("Teams")
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+local camera = game.Workspace.Camera
+local UIS = game:GetService("UserInputService")
+
+local espoverall = false
+
+local espbox = false
+local espboxoutline = false
+
+local esptracer = false
+local esptraceroutline = false
+local tracertype = 1 
+
+local esphealthbar = false
+local esphealthbaroutline = false
+
+local espname = false
+
+local espdrone = false
+local espdroneoutline = false
+
+local espboxes = {}
+local espboxoutlines = {}
+local esptracers = {}
+local esptraceroutlines = {}
+local esphealthbars = {}
+local esphealthbaroutlines = {}
+local espnames = {}
+local espdrones = {}
+local espdroneoutlines = {}
+
+local screensize = game.Workspace.CurrentCamera.ViewportSize
+local screenpositions = {Vector2.new(screensize.X / 2, screensize.Y), Vector2.new(screensize.X / 2, screensize.Y / 2), Vector2.new(screensize.X / 2, 0)}
+
+local function removeplr(name)
+	if espboxes[name] then espboxes[name].Visible = false; espboxes[name]:Remove(); espboxes[name] = nil end
+	if espboxoutlines[name] then espboxoutlines[name].Visible = false; espboxoutlines[name]:Remove(); espboxoutlines[name] = nil end
+	if esptracers[name] then esptracers[name].Visible = false; esptracers[name]:Remove(); esptracers[name] = nil end
+	if esptraceroutlines[name] then esptraceroutlines[name].Visible = false; esptraceroutlines[name]:Remove(); esptraceroutlines[name] = nil end
+	if esphealthbars[name] then esphealthbars[name].Visible = false; esphealthbars[name]:Remove(); esphealthbars[name] = nil end
+	if esphealthbaroutlines[name] then esphealthbaroutlines[name].Visible = false; esphealthbaroutlines[name]:Remove(); esphealthbaroutlines[name] = nil end
+	if espnames[name] then espnames[name].Visible = false; espnames[name]:Remove(); espnames[name] = nil end
+end
+
+local function removedrone(drone)
+	if espdrones[drone] then espdrones[drone].Visible = false; espdrones[drone]:Remove(); espdrones[drone] = nil end
+	if espdroneoutlines[drone] then espdroneoutlines[drone].Visible = false; espdroneoutlines[drone]:Remove(); espdroneoutlines[drone] = nil end
+end
+
+local function getenemies()
+	local team = lp.Team
+	local enemies = {}
+	for _,plr in pairs(Players:GetChildren()) do
+		if espoverall and plr.Character and Players[plr.Name].Team ~= team then
+			local hum = plr.Character:FindFirstChild("Humanoid")
+			if hum and hum.Health > 0 then
+				table.insert(enemies, plr.Character)
+			end
+		end
+	end
+	local drones = {}
+	for _,v in pairs(game.Workspace:GetChildren()) do
+		if v.Name == "Drone" then
+			table.insert(drones, v)
+		end
+	end
+	return enemies, drones
+end
+
+local function getCharMinMax(char)
+	local minX, maxX = math.huge, -math.huge
+	local minY, maxY = math.huge, -math.huge
+
+	for _, part in pairs(char:GetChildren()) do
+		if part:IsA("BasePart") then
+			local cf = part.CFrame
+			local size = part.Size / 2
+
+			local corners = {
+				Vector3.new(-size.X, -size.Y, -size.Z),
+				Vector3.new(-size.X, -size.Y,  size.Z),
+				Vector3.new(-size.X,  size.Y, -size.Z),
+				Vector3.new(-size.X,  size.Y,  size.Z),
+				Vector3.new( size.X, -size.Y, -size.Z),
+				Vector3.new( size.X, -size.Y,  size.Z),
+				Vector3.new( size.X,  size.Y, -size.Z),
+				Vector3.new( size.X,  size.Y,  size.Z),
+			}
+
+			for _, offset in pairs(corners) do
+				local worldPoint = cf:PointToWorldSpace(offset)
+				local screenPos, onScreen = camera:WorldToViewportPoint(worldPoint)
+				if onScreen then
+					minX = math.min(minX, screenPos.X)
+					maxX = math.max(maxX, screenPos.X)
+					minY = math.min(minY, screenPos.Y)
+					maxY = math.max(maxY, screenPos.Y)
+				end
+			end
+		end
+	end
+
+	return maxX, maxY, minX, minY
+end
+
+local function torture(char)
+	local maxX, maxY, minX, minY = getCharMinMax(char)
+	local topleft = Vector2.new(minX, minY)
+
+	local boxCFrame, boxSize = char:GetBoundingBox()
+	local topCenterWorld = boxCFrame.Position + boxCFrame.UpVector * (boxSize.Y / 2)
+
+	local camLeft = -camera.CFrame.RightVector
+	local p0, on0 = camera:WorldToViewportPoint(topCenterWorld)
+	local pL, onL = camera:WorldToViewportPoint(topCenterWorld + camLeft * 0.3)
+
+	if not (on0 and onL) then
+		return topleft, topleft
+	end
+
+	local LOffset = Vector2.new(pL.X - p0.X, pL.Y - p0.Y)
+
+	local left2d = topleft + LOffset
+
+	return topleft, left2d
+end
+
+local function mainESP(target)
+	if target == nil or (not target) then
+		return
+	end
+	if not target:IsA("Model") then
+		return
+	end
+
+	local maxX, maxY, minX, minY = getCharMinMax(target)
+	local outline
+
+	local box
+
+	if espboxoutlines[target.Name] then
+		outline = espboxoutlines[target.Name]
+	else
+		outline = Drawing.new("Square")
+		outline.Visible = true
+		outline.Transparency = 0.5
+		outline.Color = Color3.new(0,0,0)
+		outline.Thickness = 2
+		outline.Filled = false
+		espboxoutlines[target.Name] = outline
+	end
+
+	if espboxes[target.Name] then
+		box = espboxes[target.Name]
+	else
+		box = Drawing.new("Square")
+		box.Visible = true
+		box.Transparency = 0.5
+		box.Color = Color3.new(1,1,1)
+		box.Thickness = 1
+		box.Filled = false
+		espboxes[target.Name] = box
+	end
+
+	box.Size = Vector2.new(maxX - minX, maxY - minY)
+	box.Position = Vector2.new(minX, minY)
+
+	outline.Size = Vector2.new(maxX - minX, maxY - minY)
+	outline.Position = Vector2.new(minX, minY)
+
+	local line
+
+	if esptraceroutlines[target.Name] then
+		outline = esptraceroutlines[target.Name]
+	else 
+		outline = Drawing.new("Line")
+		outline.Visible = true
+		outline.Color = Color3.new(0,0,0)
+		outline.Thickness = 2 
+		esptraceroutlines[target.Name] = outline
+	end
+
+	if esptracers[target.Name] then 
+		line = esptracers[target.Name]
+	else 
+		line = Drawing.new("Line")
+		line.Visible = true
+		line.Color = Color3.new(1,1,1)
+		line.Thickness = 1 
+		esptracers[target.Name] = line
+	end
+
+
+	outline.From = screenpositions[tracertype]
+	line.From = screenpositions[tracertype]
+
+	outline.To = Vector2.new(minX + (maxX - minX)/2, minY) 
+	line.To = Vector2.new(minX + (maxX - minX)/2, minY)
+
+	local healthbar
+
+	if esphealthbaroutlines[target.Name] then
+		outline = esphealthbaroutlines[target.Name]
+	else
+		outline = Drawing.new("Square")
+		outline.Visible = true
+		outline.Color = Color3.new(0,0,0)
+		outline.Thickness = 2
+		outline.Filled = false
+		esphealthbaroutlines[target.Name] = outline
+	end
+
+	if esphealthbars[target.Name] then
+		healthbar = esphealthbars[target.Name]
+	else
+		healthbar = Drawing.new("Square")
+		healthbar.Visible = true
+		healthbar.Color = Color3.new(0,1,0)
+		healthbar.Thickness = 1
+		healthbar.Filled = true
+		esphealthbars[target.Name] = healthbar
+	end
+
+	local topleft, width = torture(target)
+	local hWidth = (topleft - width).Magnitude
+	local targethealthloss = Vector2.new(0, (maxY - minY) * (1 - target.Humanoid.Health/100))
+
+	healthbar.Size = Vector2.new(hWidth, (maxY - minY)) - targethealthloss
+	healthbar.Position = Vector2.new(topleft.X - hWidth, minY) + targethealthloss
+
+	outline.Size = Vector2.new(hWidth, (maxY - minY)) - targethealthloss
+	outline.Position = Vector2.new(topleft.X - hWidth, minY) + targethealthloss
+
+	local name
+
+	if espnames[target.Name] then
+		name = espnames[target.Name]
+	else
+		name = Drawing.new("Text")
+		name.Visible = true
+		name.Color = Color3.new(1,1,1)
+		name.Text = target.Name
+		name.Size = 12
+		name.Center = true
+		name.Outline = true
+		name.OutlineColor = Color3.new(0,0,0)
+		espnames[target.Name] = name
+	end
+
+	name.Position = Vector2.new(minX + (maxX - minX)/2, minY - name.TextBounds.Y - 3)
+end
+
+local function drone_esp(target)
+	if target == nil or (not target) then
+		return
+	end
+	if not target:IsDescendantOf(game.Workspace) then
+		removedrone(target)
+		return
+	end
+	if not target:IsA("Model") then
+		return
+	end
+
+	local maxX, maxY, minX, minY = getCharMinMax(target)
+	local outline
+
+	local box
+
+	if espdroneoutlines[target] then
+		outline = espdroneoutlines[target]
+	else
+		outline = Drawing.new("Square")
+		outline.Visible = true
+		outline.Transparency = 0.5
+		outline.Color = Color3.new(0,0,0)
+		outline.Thickness = 2
+		outline.Filled = false
+		espdroneoutlines[target] = outline
+	end
+
+	if espdrones[target] then
+		box = espdrones[target]
+	else
+		box = Drawing.new("Square")
+		box.Visible = true
+		box.Transparency = 0.5
+		box.Color = Color3.new(1,0,0)
+		box.Thickness = 1
+		box.Filled = false
+		espdrones[target] = box
+	end
+
+	box.Size = Vector2.new(maxX - minX, maxY - minY)
+	box.Position = Vector2.new(minX, minY)
+
+	outline.Size = Vector2.new(maxX - minX, maxY - minY)
+	outline.Position = Vector2.new(minX, minY)
+end
+
+Players.PlayerRemoving:Connect(function(plr)
+	removeplr(plr.Name)
+end)
+
+local function charhook(plr)
+	local char = plr.Character
+	if not char then return end
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	if hum then
+		hum.Died:Connect(function()
+			removeplr(plr.Name)
+		end)
+	end
+end
+
+Players.PlayerAdded:Connect(function(plr)
+	plr.CharacterAdded:Connect(function()
+		charhook(plr)
+	end)
+end)
+
+for _,plr in ipairs(Players:GetPlayers()) do
+	if plr.Character then charhook(plr) end
+end
+
+game:GetService("RunService").RenderStepped:Connect(function()
+	local enemies, drones = getenemies()
+
+	local alive = {}
+	for _,e in pairs(enemies) do
+		alive[e.Name] = true
+		mainESP(e)
+	end
+
+	for _,d in pairs(drones) do
+		drone_esp(d)
+	end
+
+	for name,_ in pairs(espboxes) do
+		if not alive[name] then removeplr(name) end
+	end
+	for name,_ in pairs(espboxoutlines) do
+	if not alive[name] then removeplr(name) end
+	end
+	for name,_ in pairs(esptracers) do
+		if not alive[name] then removeplr(name) end
+	end
+	for name,_ in pairs(esptraceroutlines) do
+		if not alive[name] then removeplr(name) end
+	end
+	for name,_ in pairs(esphealthbars) do
+		if not alive[name] then removeplr(name) end
+	end
+	for name,_ in pairs(esphealthbaroutlines) do
+		if not alive[name] then removeplr(name) end
+	end
+	for name,_ in pairs(espnames) do
+		if not alive[name] then removeplr(name) end
+	end
+
+	for drone,_ in pairs(espdrones) do
+		if not drone or not drone:IsDescendantOf(game.Workspace) then
+			removedrone(drone)
+		end
+	end
+	for drone,_ in pairs(espdroneoutlines) do
+		if not drone or not drone:IsDescendantOf(game.Workspace) then
+			removedrone(drone)
+		end
+	end
+end)
+
+game.Players.PlayerAdded:Connect(function(plr)
+	plr.CharacterAdded:Connect(function(char)
+		local Head = char:WaitForChild("Head")
+		if plr.Team == game.Players.LocalPlayer.Team then
+		if Head then
+			print("Head Found!")
+			game:GetService("RunService").RenderStepped:Connect(function()
+			Head.Size = Vector3.new(hitboxsize, hitboxsize, hitboxsize)
+			Head.Transparency = .45
+			end)
+			else
+			print("Head Not Found!")
+		end
+		end
+	end)
+end)
+
+local Window = Rayfield:CreateWindow({
+   Name = "Darkizzy Hub",
+   Icon = 0, 
+   LoadingTitle = "Operation One Cheats",
+   LoadingSubtitle = "by Darkizz",
+   ShowText = "Rayfield", 
+   Theme = "Default", 
+
+   ToggleUIKeybind = "K", 
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, 
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil,
+      FileName = "DarkizeeHub"
+   },
+
+   Discord = {
+      Enabled = false, 
+      Invite = "noinvitelink", 
+      RememberJoins = true 
+   },
+
+   KeySystem = true, 
+   KeySettings = {
+      Title = "Darkizzy Hub",
+      Subtitle = "Operation One",
+      Note = "Ask Darkizee for the key", 
+      FileName = "Key", 
+      SaveKey = false, 
+      GrabKeyFromSite = false,
+      Key = {"MrCarlos"}
+   }
+})
+
+local Tab = Window:CreateTab("Gun Modifications", "swords")
+local Section = Tab:CreateSection("Gun Modifications")
+
+local Toggle9 = Tab:CreateToggle({
+   Name = "Modify Gun",
+   CurrentValue = false,
+   Flag = "Toggle9",
+   Callback = function(GunToggle)
+   GunToggles = GunToggle
+   end,
+})
+
+local Divider6 = Tab:CreateDivider()
+
+local Section8 = Tab:CreateSection("Firerate Modification")
+local Section12 = Tab:CreateSection("POSSIBLY DETECTED⚠️⚠️")
+
+local Slider = Tab:CreateSlider({
+   Name = "Side Recoil",
+   Range = {0, 100},
+   Increment = 2,
+   Suffix = "Recoil Value",
+   CurrentValue = 0,
+   Flag = "Slider1",
+   Callback = function(RecoilValueSide)
+   Recoilside = RecoilValueSide
+   end,
+})
+
+local Slider2 = Tab:CreateSlider({
+   Name = "Vertical Recoil",
+   Range = {0, 100},
+   Increment = 2,
+   Suffix = "Recoil Value",
+   CurrentValue = 0,
+   Flag = "Slider2",
+   Callback = function(RecoilValueUp)
+   Recoilvertical = RecoilValueUp
+   end,
+})
+
+local Divider = Tab:CreateDivider()
+
+local Section2 = Tab:CreateSection("Firerate Modification")
+
+local Slider3 = Tab:CreateSlider({
+   Name = "Firerate",
+   Range = {250, 5000},
+   Increment = 50,
+   Suffix = "Recoil Value",
+   CurrentValue = 1000,
+   Flag = "Slider3",
+   Callback = function(FirerateValue)
+   Fireratespeed = FirerateValue
+   end,
+})
+
+local Tab2 = Window:CreateTab("ESP", "scan-eye")
+local Section3 = Tab2:CreateSection("ESP")
+
+local Toggle = Tab2:CreateToggle({
+   Name = "ESP",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(ESPoverall)
+   espoverall = ESPoverall
+   end,
+})
+
+local Divider2 = Tab2:CreateDivider()
+
+local Section4 = Tab2:CreateSection("Boxes")
+
+local Toggle2 = Tab2:CreateToggle({
+   Name = "Esp Boxes",
+   CurrentValue = false,
+   Flag = "Toggle2",
+   Callback = function(ESPBox)
+   espbox = ESPBox
+   end,
+})
+
+local Toggle3 = Tab2:CreateToggle({
+   Name = "Esp Boxes Outline",
+   CurrentValue = false,
+   Flag = "Toggle3",
+   Callback = function(ESPBoxOutline)
+   espboxoutline = ESPBoxOutline
+   end,
+})
+
+local Divider3 = Tab2:CreateDivider()
+
+local Section5 = Tab2:CreateSection("Health Bars")
+
+local Toggle4 = Tab2:CreateToggle({
+   Name = "ESP HealthBars",
+   CurrentValue = false,
+   Flag = "Toggle4",
+   Callback = function(ESPHealthBars)
+   esphealthbar = ESPHealthBars
+   end,
+})
+
+local Toggle5 = Tab2:CreateToggle({
+   Name = "ESP HealthBars Outlines",
+   CurrentValue = false,
+   Flag = "Toggle5",
+   Callback = function(ESPHealthBarOutline)
+   esphealthbaroutline = ESPHealthBarOutline
+   end,
+})
+
+local Divider4 = Tab2:CreateDivider()
+
+local Section6 = Tab2:CreateSection("Names")
+
+local Toggle6 = Tab2:CreateToggle({
+   Name = "ESP Names",
+   CurrentValue = false,
+   Flag = "Toggle6",
+   Callback = function(ESPNames)
+   espname = ESPNames
+   end,
+})
+
+local Divider5 = Tab2:CreateDivider()
+
+local Section7 = Tab2:CreateSection("Drones")
+
+local Toggle7 = Tab2:CreateToggle({
+   Name = "ESP Drones",
+   CurrentValue = false,
+   Flag = "Toggle7",
+   Callback = function(ESPDrones)
+   espdrone = ESPDrones
+   end,
+})
+
+local Toggle8 = Tab2:CreateToggle({
+   Name = "ESP Drones Outlines",
+   CurrentValue = false,
+   Flag = "Toggle8",
+   Callback = function(ESPDronesOutline)
+   espdroneoutline = ESPDronesOutline
+   end,
+})
+
+local Tab3 = Window:CreateTab("Movement", "footprints")
+local Section9 = Tab3:CreateSection("Walkspeed")
+local Section13 = Tab3:CreateSection("Doesn't work I will try to find a way to implement this! ❌")
+
+local Slider4 = Tab3:CreateSlider({
+   Name = "Walkspeed",
+   Range = {16, 32},
+   Increment = 1,
+   Suffix = "Walk Speed",
+   CurrentValue = 16,
+   Flag = "Slider4",
+   Callback = function(Walkspeed)
+   WalkSpeed = Walkspeed
+   end,
+})
+
+local Divider7 = Tab3:CreateDivider()
+
+local Section10 = Tab3:CreateSection("Field Of View")
+
+local Slider5 = Tab3:CreateSlider({
+   Name = "Field Of View",
+   Range = {60, 120},
+   Increment = 1,
+   Suffix = "FOV",
+   CurrentValue = 80,
+   Flag = "Slider5",
+   Callback = function(FOV)
+   workspace.CurrentCamera.FieldOfView = FOV
+   end,
+})
+
+local Tab4 = Window:CreateTab("Hitboxes", "square")
+local Section11 = Tab4:CreateSection("Hitbox Size")
+
+local Slider6 = Tab4:CreateSlider({
+   Name = "Hitbox Expansion",
+   Range = {1, 6},
+   Increment = .5,
+   Suffix = "Head Size",
+   CurrentValue = 1,
+   Flag = "Slider6",
+   Callback = function(HeadSize)
+   hitboxsize = HeadSize
+   end,
+})
+
+local Actors = getactors()[1]
+
+game:GetService("RunSevice").RenderStepped:Connect(function()
+if GunToggles == true then
+if GunToggle2 = true then
+GunToggles2 = false
+run_on_actor(Actors, [[
+local Recoilvertical = Recoilvertical;
+local Recoilside = Recoilside;
+local Fireratespeed = Fireratespeed;
+for _,v in next, getgc(true) do
+    if (typeof(v) ~= "table") then
+        continue;
+    end;
+
+    local Key = rawget(v, "flash");
+    if (Key) then
+        local oldfnc; oldfnc = hookfunction(v.recoil_function, function(gun_table, gun_instance)
+            local weapon_states = gun_table["object"]["states"];
+            weapon_states.recoil_up:set(Recoilvertical);
+            weapon_states.recoil_side:set(Recoilside);
+            weapon_states.firerate:set(Fireratespeed);
+			if GunToggles == true then
+            return oldfnc(gun_table, gun_instance);
+			else
+			return oldfnc; oldfnc(gun_table, gun_instance);
+        end);
+    end;
+end;
+]])
+end
+else
+GunToggles2 = false
+end
+end)
+
