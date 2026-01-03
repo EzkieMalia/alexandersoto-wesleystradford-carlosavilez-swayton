@@ -13,18 +13,26 @@ local ScreenPositions = {Vector2.new(ScreenSize.X / 2, ScreenSize.Y), Vector2.ne
 local FirerateSpeed
 local RecoilValue
 
-local EspBox = true
-local EspTracer = true
-local EspHealth = true
-local EspName = true
-local EspDrone = true
+local EspBox = false
+local EspBoxOutline = false
+local EspTracer = false
+local EspTracerOutline = false
+local EspHealth = false
+local EspHealthBarOutline = false
+local EspName = false
+local EspDrone = false
+local EspDroneOutline = false
 
 --[[Tables]]
 local EspBoxes = {}
+local EspBoxOutlines = {}
 local EspTracers = {}
+local EspTracerOutlines = {}
 local EspHealths = {}
+local EspHealthBarOutlines = {}
 local EspNames = {}
 local EspDrones = {}
+local EspDroneOutlines = {}
 
 --[[Remove Player Name function]]
 local function RemovePlayer(name)
@@ -32,11 +40,15 @@ local function RemovePlayer(name)
 	if EspTracers[name] then EspTracers[name].Visible = false; EspTracers[name]:Remove(); EspTracers[name] = nil end
 	if EspHealths[name] then EspHealths[name].Visible = false; EspHealths[name]:Remove(); EspHealths[name] = nil end
 	if EspNames[name] then EspNames[name].Visible = false; EspNames[name]:Remove(); EspNames[name] = nil end
+    if EspBoxOutlines[name] then EspBoxOutlines[name].Visible = false; EspBoxOutlines[name]:Remove(); EspBoxOutlines[name] = nil end
+	if EspTracerOutlines[name] then EspTracerOutlines[name].Visible = false; EspTracerOutlines[name]:Remove(); EspTracerOutlines[name] = nil end
+	if EspHealthBarOutlines[name] then EspHealthBarOutlines[name].Visible = false; EspHealthBarOutlines[name]:Remove(); EspHealthBarOutlines[name] = nil end
 end
 
 --[[Remove Players Drone function]]
 local function RemovePlayerDrone(drone)
     if EspDrones[drone] then EspDrones[drone].Visible = false; EspDrones[drone]:Remove(); EspDrones[drone] = nil end
+    if EspDroneOutlines[drone] then EspDronesOutlines[drone].Visible = false; EspDroneOutlines[drone]:Remove(); EspDroneOutlines[drone] = nil end
 end
 
 --[[Get Enemies function]]
@@ -85,10 +97,10 @@ local function GetCharacterMinMax(char)
                 local WorldPoint = CFrame:PointToWorldSpace(v)
                 local ScreenPositions, OnScreen = Camera:WorldToViewportPoint(WorldPoint)
                 if OnScreen then
-                minX = math.min(minX, screenPos.X)
-				maxX = math.max(maxX, screenPos.X)
-				minY = math.min(minY, screenPos.Y)
-				maxY = math.max(maxY, screenPos.Y)
+                minX = math.min(minX, ScreenPositions.X)
+				maxX = math.max(maxX, ScreenPositions.X)
+				minY = math.min(minY, ScreenPositions.Y)
+				maxY = math.max(maxY, ScreenPositions.Y)
                 end
             end
         end
@@ -102,7 +114,7 @@ local function HealthBarCalculations(char)
     local TopLeft = Vector2.new(minX, minY)
 
     local BoxCFrame, BoxSize = char:GetBoundingBox()
-    local TopCenterWorld = BoxCFrame.Position + BoxCFrame * (BoxSize.Y / 2)
+    local TopCenterWorld = BoxCFrame.Position + BoxCFrame.UpVector * (BoxSize.Y / 2)
 
     local CameraLeft = -Camera.CFrame.RightVector
     local p0, on0 = Camera:WorldToViewportPoint(TopCenterWorld)
@@ -130,8 +142,8 @@ local function MainEsp(target)
 	local outline
 	local box
 
-	if EspBoxes[target.Name] then
-		outline = EspBoxes[target.Name]
+	if EspBoxOutlines[target.Name] then
+		outline = EspBoxOutlines[target.Name]
 	else
 		outline = Drawing.new("Square")
 		outline.Visible = true
@@ -139,7 +151,7 @@ local function MainEsp(target)
 		outline.Color = Color3.new(0,0,0)
 		outline.Thickness = 2
 		outline.Filled = false
-		EspBoxes[target.Name] = outline
+		EspBoxOutlines[target.Name] = outline
 	end
 
 	if EspBoxes[target.Name] then
@@ -161,14 +173,14 @@ local function MainEsp(target)
 	outline.Position = Vector2.new(minX, minY)
 	local line
 
-	if EspTracers[target.Name] then 
-		outline = EspTracers[target.Name]
+	if EspTracerOutlines[target.Name] then 
+		outline = EspTracerOutlines[target.Name]
 	else
 		outline = Drawing.new("Line")
 		outline.Visible = true
 		outline.Color = Color3.new(0,0,0)
 		outline.Thickness = 4
-		EspTracers[target.Name] = outline
+		EspTracerOutlines[target.Name] = outline
 	end
 	
 	if EspTracers[target.Name] then
@@ -181,8 +193,8 @@ local function MainEsp(target)
 		EspTracers[target.Name] = line
 	end
 
-	outline.From = ScreenPositions[tracertype]
-	line.From = ScreenPositions[tracertype]
+	outline.From = ScreenPositions[2]
+	line.From = ScreenPositions[2]
 
 	outline.To = Vector2.new(minX + (maxX - minX)/2, minY) 
 	line.To = Vector2.new(minX + (maxX - minX)/2, minY)
@@ -190,20 +202,19 @@ local function MainEsp(target)
 	local healthbar
     local healthtext
 
-	if EspHealths[target.Name] then
-		outline = EspHealths[target.Name]
+	if EspHealthBarOutlines[target.Name] then
+		outline = EspHealthBarOutlines[target.Name]
 	else
 		outline = Drawing.new("Square")
 		outline.Visible = true
 		outline.Color = Color3.new(0,0,0)
 		outline.Thickness = 2
 		outline.Filled = false
-		EspHealths[target.Name] = outline
+		EspHealthBarOutlines[target.Name] = outline
 	end
 
 	if EspHealths[target.Name] then
 		healthbar = EspHealths[target.Name]
-        healthtext = EspHealths[target.Name]
 	else
 		healthbar = Drawing.new("Square")
 		healthbar.Visible = true
@@ -211,15 +222,9 @@ local function MainEsp(target)
 		healthbar.Thickness = 1
 		healthbar.Filled = true
 		EspHealths[target.Name] = healthbar
-        healthtext = Drawing.new("Text")
-        healthtext.Position = Vector2.new(minX, maxY / 2)
-        healthtext.Visible = true
-        healthtext.Color = Color3.fromRGB(255,255,255)
-        healthtext.Text = target.Humanoid.Health
-        healthtext.Size = 15
 	end
 
-	local topleft, width = torture(target)
+	local topleft, width = HealthBarCalculations(target)
 	local hWidth = (topleft - width).Magnitude
 	local targethealthloss = Vector2.new(0, (maxY - minY) * (1 - target.Humanoid.Health/100))
 
@@ -235,7 +240,9 @@ local function MainEsp(target)
 		name = EspNames[target.Name]
 	else
 		name = Drawing.new("Text")
+        if EspName == true then
 		name.Visible = true
+        end
 		name.Color = Color3.new(1,1,1)
 		name.Text = target.Name
 		name.Size = 12
@@ -246,6 +253,32 @@ local function MainEsp(target)
 	end
 
 	name.Position = Vector2.new(minX + (maxX - minX)/2, minY - name.TextBounds.Y - 3)
+    if EspName == true then
+    EspNames[target.Name].Visible = true
+    else
+    EspNames[target.Name].Visible = false
+    end
+    if EspBox == true then
+    EspBoxes[target.Name].Visible = true
+    EspBoxOutlines[target.Name].Visible = true
+    else
+    EspBoxes[target.Name].Visible = false
+    EspBoxOutlines[target.Name].Visible = false
+    end
+    if EspTracer == true then
+    EspTracers[target.Name].Visible = true
+    EspTracerOutlines[target.Name].Visible = true
+    else
+    EspTracers[target.Name].Visible = false
+    EspTracerOutlines[target.Name].Visible = false
+    end
+    if EspDrone == true then
+    EspDrones[target.Name] = true
+    EspDroneOutlines[target.Name] = true
+    else
+    EspDrone[target.Name] = false
+    EspDroneOutlines[target.Name] = false
+    end
 end
 
 --[[Drone Esp function]]
@@ -254,7 +287,7 @@ local function drone_esp(target)
 		return
 	end
 	if not target:IsDescendantOf(game.Workspace) then
-		removedrone(target)
+		RemovePlayerDrone(target)
 		return
 	end
 	if not target:IsA("Model") then
@@ -266,8 +299,8 @@ local function drone_esp(target)
 
 	local box
 
-	if EspDrones[target] then
-		outline = EspDrones[target]
+	if EspDroneOutlines[target] then
+		outline = EspDroneOutlines[target]
 	else
 		outline = Drawing.new("Square")
 		outline.Visible = true
@@ -275,7 +308,7 @@ local function drone_esp(target)
 		outline.Color = Color3.new(0,0,0)
 		outline.Thickness = 2
 		outline.Filled = false
-		EspDrones[target] = outline
+		EspDroneOutlines[target] = outline
 	end
 
 	if EspDrones[target] then
@@ -334,7 +367,7 @@ RunService.RenderStepped:Connect(function()
 	local alive = {}
 	for i,v in pairs(enemies) do
 		alive[v.Name] = true
-		MainEsp(e)
+		MainEsp(v)
 	end
 
 	for c,d in pairs(drones) do
@@ -365,12 +398,12 @@ RunService.RenderStepped:Connect(function()
 
 	for drone,_ in pairs(EspDrones) do
 		if not drone or not drone:IsDescendantOf(game.Workspace) then
-			removedrone(drone)
+			RemovePlayerDrone(drone)
 		end
 	end
 	for drone,_ in pairs(EspDrones) do
 		if not drone or not drone:IsDescendantOf(game.Workspace) then
-			removedrone(drone)
+			RemovePlayerDrone(drone)
 		end
 	end
 end)
@@ -378,7 +411,7 @@ end)
 --[[Modify Firerate function]]
 local function ModifyFirerate()
     local Actors = getactors()[1]
-    run_onactor(Actors,[[
+    run_on_actor(Actors,[[
         for i,v in next, getgc(true) do
             if(typeof(v) ~= "table") then
             continue;
@@ -399,7 +432,7 @@ end
 --[[Modify Recoil function]]
 local function ModifyRecoil()
     local Actors = getactors()[1]
-    run_onactor(Actors,[[
+    run_on_actor(Actors,[[
         for i,v in next, getgc(true) do
             if(typeof(v) ~= "table") then
             continue;
@@ -511,7 +544,68 @@ local Divider2 = ModifyGunsTab:CreateDivider()
 
 local EspTab = Window:CreateTab("ESP", "eye")
 
+local Section3 = EspTab:CreateSection("Esp Boxes")
 
+local Toggle = EspTab:CreateToggle({
+   Name = "Boxes",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+    EspBox = Value
+   end,
+})
 
+local Divider3 = EspTab:CreateDivider()
 
+local Section4 = EspTab:CreateSection("Esp Tracers")
+
+local Toggle2 = EspTab:CreateToggle({
+   Name = "Tracers",
+   CurrentValue = false,
+   Flag = "Toggle2",
+   Callback = function(Value)
+    EspTracer = Value
+   end,
+})
+
+local Divider4 = EspTab:CreateDivider()
+
+local Section5 = EspTab:CreateSection("Esp Health")
+
+local Toggle3 = EspTab:CreateToggle({
+   Name = "Health Bars",
+   CurrentValue = false,
+   Flag = "Toggle3",
+   Callback = function(Value)
+    EspHealth = Value
+   end,
+})
+
+local Divider5 = EspTab:CreateDivider()
+
+local Section6 = EspTab:CreateSection("Esp Names")
+
+local Toggle4 = EspTab:CreateToggle({
+   Name = "Names",
+   CurrentValue = false,
+   Flag = "Toggle4",
+   Callback = function(Value)
+    EspName = Value
+   end,
+})
+
+local Divider6 = EspTab:CreateDivider()
+
+local Section7 = EspTab:CreateSection("Esp Drones")
+
+local Toggle5 = EspTab:CreateToggle({
+   Name = "Drones",
+   CurrentValue = false,
+   Flag = "Toggle5",
+   Callback = function(Value)
+    EspDrone = Value
+   end,
+})
+
+local Divider7 = EspTab:CreateDivider()
 
