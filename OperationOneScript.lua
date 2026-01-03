@@ -149,7 +149,7 @@ local function MainEsp(target)
 		outline.Visible = true
 		outline.Transparency = 0.6
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 2
+		outline.Thickness = 3
 		outline.Filled = false
 		EspBoxOutlines[target.Name] = outline
 	end
@@ -161,7 +161,7 @@ local function MainEsp(target)
 		box.Visible = true
 		box.Transparency = 0.6
 		box.Color = Color3.new(1,1,1)
-		box.Thickness = 3
+		box.Thickness = 4
 		box.Filled = false
 		EspBoxes[target.Name] = box
 	end
@@ -179,7 +179,7 @@ local function MainEsp(target)
 		outline = Drawing.new("Line")
 		outline.Visible = true
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 5
+		outline.Thickness = 6
 		EspTracerOutlines[target.Name] = outline
 	end
 	
@@ -189,7 +189,7 @@ local function MainEsp(target)
 		line = Drawing.new("Line")
 		line.Visible = true
 		line.Color = Color3.new(1,1,1)
-		line.Thickness = 2
+		line.Thickness = 3
 		EspTracers[target.Name] = line
 	end
 
@@ -208,7 +208,7 @@ local function MainEsp(target)
 		outline = Drawing.new("Square")
 		outline.Visible = true
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 4
+		outline.Thickness = 7
 		outline.Filled = false
 		EspHealthBarOutlines[target.Name] = outline
 	end
@@ -219,7 +219,7 @@ local function MainEsp(target)
 		healthbar = Drawing.new("Square")
 		healthbar.Visible = true
 		healthbar.Color = Color3.new(0,1,0)
-		healthbar.Thickness = 2
+		healthbar.Thickness = 4
 		healthbar.Filled = true
 		EspHealths[target.Name] = healthbar
 	end
@@ -245,7 +245,7 @@ local function MainEsp(target)
         end
 		name.Color = Color3.new(1,1,1)
 		name.Text = target.Name
-		name.Size = 16
+		name.Size = 18
 		name.Center = true
 		name.Outline = true
 		name.OutlineColor = Color3.new(0,0,0)
@@ -259,11 +259,15 @@ local function MainEsp(target)
     EspNames[target.Name].Visible = false
     end
 	if EspDrone == true then
+		if EspDrones[target.Name] then
 		EspDrones[target.Name].Visible = true
 		EspDroneOutlines[target.Name].Visible = true
+		end
 	else
+		if EspDrones[target.Name] then
 		EspDrones[target.Name].Visible = false
 		EspDroneOutlines[target.Name].Visible = false
+		end
 	end
     if EspBox == true then
     EspBoxes[target.Name].Visible = true
