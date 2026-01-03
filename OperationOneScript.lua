@@ -48,7 +48,7 @@ end
 --[[Remove Players Drone function]]
 local function RemovePlayerDrone(drone)
     if EspDrones[drone] then EspDrones[drone].Visible = false; EspDrones[drone]:Remove(); EspDrones[drone] = nil end
-    if EspDroneOutlines[drone] then EspDronesOutlines[drone].Visible = false; EspDroneOutlines[drone]:Remove(); EspDroneOutlines[drone] = nil end
+    if EspDroneOutlines[drone] then EspDroneOutlines[drone].Visible = false; EspDroneOutlines[drone]:Remove(); EspDroneOutlines[drone] = nil end
 end
 
 --[[Get Enemies function]]
