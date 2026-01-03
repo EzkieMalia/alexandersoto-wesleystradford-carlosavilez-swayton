@@ -258,17 +258,6 @@ local function MainEsp(target)
     else
     EspNames[target.Name].Visible = false
     end
-	if EspDrone == true then
-		if EspDrones[target.Name] then
-		EspDrones[target.Name].Visible = true
-		EspDroneOutlines[target.Name].Visible = true
-		end
-	else
-		if EspDrones[target.Name] then
-		EspDrones[target.Name].Visible = false
-		EspDroneOutlines[target.Name].Visible = false
-		end
-	end
     if EspBox == true then
     EspBoxes[target.Name].Visible = true
     EspBoxOutlines[target.Name].Visible = true
@@ -359,6 +348,14 @@ local function drone_esp(target)
 
 	outline.Size = Vector2.new(maxX - minX, maxY - minY)
 	outline.Position = Vector2.new(minX, minY)
+
+		if EspDrone == true then
+		EspDrones[target].Visible = true
+		EspDroneOutlines[target].Visible = true
+	else
+		EspDrones[target].Visible = false
+		EspDroneOutlines[target].Visible = false
+	end
 end
 
 --[[Player Removing function]]
