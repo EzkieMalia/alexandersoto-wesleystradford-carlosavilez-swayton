@@ -300,7 +300,6 @@ local function MainEsp(target)
 	EspNames[target.Name].Visible = false
 	end
 end
-end
 
 --[[Drone Esp function]]
 local function drone_esp(target)
