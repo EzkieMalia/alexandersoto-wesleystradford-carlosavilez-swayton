@@ -276,7 +276,7 @@ local function MainEsp(target)
     EspDrones[target.Name] = true
     EspDroneOutlines[target.Name] = true
     else
-    EspDrone[target.Name] = false
+    EspDrones[target.Name] = false
     EspDroneOutlines[target.Name] = false
 	if EspDrone == true then
 		EspDrones[target.Name].Visible = true
@@ -311,6 +311,7 @@ local function MainEsp(target)
 	else
 	EspNames[target.Name].Visible = false
 	end
+end
 end
 
 --[[Drone Esp function]]
