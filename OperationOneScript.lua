@@ -437,7 +437,7 @@ RunService.RenderStepped:Connect(function()
 end)
 
 --[[Modify Firerate function]]
-local function ModifyFirerate()
+local function ModifyFirerate(fireratesped)
     local Actors = getactors()[1]
     run_on_actor(Actors,[[
         for i,v in next, getgc(true) do
@@ -449,7 +449,7 @@ local function ModifyFirerate()
         if (Flash) then
             local oldfirerate; oldfirerate = hookfunction(v.recoil_function, function(gun_table, gun_instance)
                 local weapon_states = gun_table["object"]["states"];
-                weapon_states.firerate:set(2500)
+                weapon_states.firerate:set((fireratesped))
                 return oldfirerate(gun_table, gun_instance)
                 end);
             end;
@@ -458,7 +458,7 @@ local function ModifyFirerate()
 end
 
 --[[Modify Recoil function]]
-local function ModifyRecoil()
+local function ModifyRecoil(recoilvale)
     local Actors = getactors()[1]
     run_on_actor(Actors,[[
         for i,v in next, getgc(true) do
@@ -470,8 +470,8 @@ local function ModifyRecoil()
         if (Flash) then
             local oldfirerate; oldfirerate = hookfunction(v.recoil_function, function(gun_table, gun_instance)
                 local weapon_states = gun_table["object"]["states"];
-                weapon_states.recoil_up:set(0)
-                weapon_states.recoil_side:set(0)
+                weapon_states.recoil_up:set((recoilvale))
+                weapon_states.recoil_side:set((recoilvale))
                 return oldfirerate(gun_table, gun_instance)
                 end);
             end;
@@ -527,7 +527,7 @@ local Section = ModifyGunsTab:CreateSection("Detected by game! ⚠️")
 local Button = ModifyGunsTab:CreateButton({
    Name = "Modify Firerate",
    Callback = function()
-   ModifyFirerate()
+   ModifyFirerate(FirerateSpeed)
    end,
 })
 
@@ -550,7 +550,7 @@ local Section2 = ModifyGunsTab:CreateSection("Detected by game! ⚠️")
 local Button2 = ModifyGunsTab:CreateButton({
    Name = "Modify Recoil",
    Callback = function()
-   ModifyRecoil()
+   ModifyRecoil(RecoilValue)
    end,
 })
 
