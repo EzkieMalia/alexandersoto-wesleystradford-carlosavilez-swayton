@@ -147,7 +147,7 @@ local function MainEsp(target)
 	else
 		outline = Drawing.new("Square")
 		outline.Visible = true
-		outline.Transparency = 0.5
+		outline.Transparency = 0.6
 		outline.Color = Color3.new(0,0,0)
 		outline.Thickness = 2
 		outline.Filled = false
@@ -159,9 +159,9 @@ local function MainEsp(target)
 	else
 		box = Drawing.new("Square")
 		box.Visible = true
-		box.Transparency = 0.5
+		box.Transparency = 0.6
 		box.Color = Color3.new(1,1,1)
-		box.Thickness = 1
+		box.Thickness = 3
 		box.Filled = false
 		EspBoxes[target.Name] = box
 	end
@@ -179,7 +179,7 @@ local function MainEsp(target)
 		outline = Drawing.new("Line")
 		outline.Visible = true
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 4
+		outline.Thickness = 5
 		EspTracerOutlines[target.Name] = outline
 	end
 	
@@ -189,7 +189,7 @@ local function MainEsp(target)
 		line = Drawing.new("Line")
 		line.Visible = true
 		line.Color = Color3.new(1,1,1)
-		line.Thickness = 1 
+		line.Thickness = 2
 		EspTracers[target.Name] = line
 	end
 
@@ -208,7 +208,7 @@ local function MainEsp(target)
 		outline = Drawing.new("Square")
 		outline.Visible = true
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 2
+		outline.Thickness = 4
 		outline.Filled = false
 		EspHealthBarOutlines[target.Name] = outline
 	end
@@ -219,7 +219,7 @@ local function MainEsp(target)
 		healthbar = Drawing.new("Square")
 		healthbar.Visible = true
 		healthbar.Color = Color3.new(0,1,0)
-		healthbar.Thickness = 1
+		healthbar.Thickness = 2
 		healthbar.Filled = true
 		EspHealths[target.Name] = healthbar
 	end
@@ -245,7 +245,7 @@ local function MainEsp(target)
         end
 		name.Color = Color3.new(1,1,1)
 		name.Text = target.Name
-		name.Size = 12
+		name.Size = 16
 		name.Center = true
 		name.Outline = true
 		name.OutlineColor = Color3.new(0,0,0)
