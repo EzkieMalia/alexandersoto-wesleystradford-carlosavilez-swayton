@@ -179,7 +179,7 @@ local function MainEsp(target)
 		outline = Drawing.new("Line")
 		outline.Visible = true
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 6
+		outline.Thickness = 4
 		EspTracerOutlines[target.Name] = outline
 	end
 	
@@ -189,7 +189,7 @@ local function MainEsp(target)
 		line = Drawing.new("Line")
 		line.Visible = true
 		line.Color = Color3.new(1,1,1)
-		line.Thickness = 3
+		line.Thickness = 1.5
 		EspTracers[target.Name] = line
 	end
 
@@ -208,7 +208,7 @@ local function MainEsp(target)
 		outline = Drawing.new("Square")
 		outline.Visible = true
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 7
+		outline.Thickness = 6
 		outline.Filled = false
 		EspHealthBarOutlines[target.Name] = outline
 	end
