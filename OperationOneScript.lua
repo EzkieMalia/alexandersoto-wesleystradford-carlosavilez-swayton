@@ -272,19 +272,7 @@ local function MainEsp(target)
     EspTracers[target.Name].Visible = false
     EspTracerOutlines[target.Name].Visible = false
     end
-    if EspDrone == true then
-    EspDrones[target.Name] = true
-    EspDroneOutlines[target.Name] = true
-    else
-    EspDrones[target.Name] = false
-    EspDroneOutlines[target.Name] = false
-	if EspDrone == true then
-		EspDrones[target.Name].Visible = true
-		EspDroneOutlines[target.Name].Visible = true
-		else
-		EspDrones[target.Name].Visible = false
-		EspDroneOutlines[target.Name].Visible = false
-	end
+
 	if EspBox == true then
 		EspBoxes[target.Name].Visible = true
 		EspBoxOutlines[target.Name].Visible = true
