@@ -498,6 +498,7 @@ local function HeadSizeModify(Character)
     task.wait(.5)
     RunService.RenderStepped:Connect(function()
     for i,v in pairs(game.Workspace.Viewmodels:GetDescendants())do
+	task.wait(.5)
     if v.Name == 'head' and typeof((v) ~= "Model") then
     if HeadSizeValue == 1 then v.Size = Vector3.new(1,1,1) else
     local success,err = pcall(function()
