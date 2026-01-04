@@ -1,5 +1,5 @@
 --[[GAME ID CHECK]]
-local GameIdCheck = true
+local GameIdCheck = false
 
 if GameIdCheck == true then
 if game.PlaceId ~= 72920620366355 then game.Players.LocalPlayer:Kick("Darkizz Hub | This game is not supported!") return end
@@ -22,6 +22,11 @@ local ScreenPositions = {Vector2.new(ScreenSize.X / 2, ScreenSize.Y), Vector2.ne
 --[[Settings]]
 local FirerateSpeed
 local RecoilValue
+
+local TracersThickness
+local BoxesThickness
+local HealthBarsThickness
+local NameSize
 
 local HeadSizeValue = 1
 local HeadSizeTransparency = 0
@@ -164,7 +169,7 @@ local function MainEsp(target)
 		outline.Visible = true
 		outline.Transparency = 0.6
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 1
+		outline.Thickness = BoxesThickness - BoxesThickness/2
 		outline.Filled = false
 		EspBoxOutlines[target.Name] = outline
 	end
@@ -176,7 +181,7 @@ local function MainEsp(target)
 		box.Visible = true
 		box.Transparency = 0.6
 		box.Color = Color3.new(1,1,1)
-		box.Thickness = 2
+		box.Thickness = BoxesThickness
 		box.Filled = false
 		EspBoxes[target.Name] = box
 	end
@@ -194,7 +199,7 @@ local function MainEsp(target)
 		outline = Drawing.new("Line")
 		outline.Visible = true
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 4
+		outline.Thickness = TracersThickness - TracersThickness/2
 		EspTracerOutlines[target.Name] = outline
 	end
 	
@@ -204,7 +209,7 @@ local function MainEsp(target)
 		line = Drawing.new("Line")
 		line.Visible = true
 		line.Color = Color3.new(1,1,1)
-		line.Thickness = 1.5
+		line.Thickness = TracersThickness
 		EspTracers[target.Name] = line
 	end
 
@@ -223,7 +228,7 @@ local function MainEsp(target)
 		outline = Drawing.new("Square")
 		outline.Visible = true
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 6
+		outline.Thickness = HealthBarsThickness
 		outline.Filled = false
 		EspHealthBarOutlines[target.Name] = outline
 	end
@@ -234,7 +239,7 @@ local function MainEsp(target)
 		healthbar = Drawing.new("Square")
 		healthbar.Visible = true
 		healthbar.Color = Color3.new(0,1,0)
-		healthbar.Thickness = 4
+		healthbar.Thickness = HealthBarsThickness - HealthBarsThickness/4
 		healthbar.Filled = true
 		EspHealths[target.Name] = healthbar
 	end
@@ -260,7 +265,7 @@ local function MainEsp(target)
         end
 		name.Color = Color3.new(1,1,1)
 		name.Text = target.Name
-		name.Size = 20
+		name.Size = NameSize
 		name.Center = true
 		name.Outline = true
 		name.OutlineColor = Color3.new(0,0,0)
@@ -453,7 +458,7 @@ end)
 
 --[[Modify Head function]]
 local function HeadSizeModify(Character)
-    if Character then print("Head found") end
+    if Character then end
     if game.PlaceId ~= 72920620366355 then
     local Head = Character:WaitForChild("Head")
     RunService.RenderStepped:Connect(function()
@@ -474,6 +479,7 @@ local function HeadSizeModify(Character)
                 local success, err = pcall(function()
                 game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
                 game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").CanCollide = false
+                game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").Transparency = HeadSizeTransparency
                 end)
                 if success then
                 elseif err then
@@ -488,7 +494,6 @@ end
 --[[Hooking the character function]]
 Players.PlayerAdded:Connect(function(plr)
     plr.CharacterAdded:Connect(function(char)
-    print("Character Added")
     HeadSizeModify(char)
     end)
 end)
@@ -646,6 +651,18 @@ local Toggle = EspTab:CreateToggle({
    end,
 })
 
+local Slider3 = EspTab:CreateSlider({
+   Name = "Boxes Thickness",
+   Range = {2, 10},
+   Increment = 1,
+   Suffix = "Thickness",
+   CurrentValue = 2,
+   Flag = "Slider3",
+   Callback = function(Value)
+   BoxesThickness = Value
+   end,
+})
+
 local Divider3 = EspTab:CreateDivider()
 
 local Section4 = EspTab:CreateSection("Esp Tracers")
@@ -656,6 +673,18 @@ local Toggle2 = EspTab:CreateToggle({
    Flag = "Toggle2",
    Callback = function(Value)
     EspTracer = Value
+   end,
+})
+
+local Slider4 = EspTab:CreateSlider({
+   Name = "Tracers Thickness",
+   Range = {2, 6},
+   Increment = 1,
+   Suffix = "Thickness",
+   CurrentValue = 2,
+   Flag = "Slider4",
+   Callback = function(Value)
+   TracersThickness = Value
    end,
 })
 
@@ -672,6 +701,18 @@ local Toggle3 = EspTab:CreateToggle({
    end,
 })
 
+local Slider5 = EspTab:CreateSlider({
+   Name = "Health Bar Thickness",
+   Range = {2, 12},
+   Increment = 1,
+   Suffix = "Thickness",
+   CurrentValue = 2,
+   Flag = "Slider5",
+   Callback = function(Value)
+   TracersThickness = Value
+   end,
+})
+
 local Divider5 = EspTab:CreateDivider()
 
 local Section6 = EspTab:CreateSection("Esp Names")
@@ -681,7 +722,19 @@ local Toggle4 = EspTab:CreateToggle({
    CurrentValue = false,
    Flag = "Toggle4",
    Callback = function(Value)
-    EspName = Value
+    NameSize = Value
+   end,
+})
+
+local Slider6 = EspTab:CreateSlider({
+   Name = "Names Size",
+   Range = {12, 32},
+   Increment = 1,
+   Suffix = "Thickness",
+   CurrentValue = 2,
+   Flag = "Slider5",
+   Callback = function(Value)
+   NameSize = Value
    end,
 })
 
@@ -706,13 +759,13 @@ local HitboxTab = Window:CreateTab("Hitboxes", "user")
 
 local Section8 = HitboxTab:CreateSection("Head Size")
 
-local Slider3 = HitboxTab:CreateSlider({
+local Slider7 = HitboxTab:CreateSlider({
    Name = "Head Size",
    Range = {1, 5},
    Increment = 1,
    Suffix = "Size",
    CurrentValue = 1,
-   Flag = "Slider3",
+   Flag = "Slider7",
    Callback = function(Value)
    HeadSizeValue = Value
    end,
@@ -720,13 +773,13 @@ local Slider3 = HitboxTab:CreateSlider({
 
 local Section9 = HitboxTab:CreateSection("Transparency")
 
-local Slider4 = HitboxTab:CreateSlider({
+local Slider8 = HitboxTab:CreateSlider({
    Name = "Head Transparency",
    Range = {0, 1},
    Increment = .05,
    Suffix = "Transparency",
    CurrentValue = 0,
-   Flag = "Slider4",
+   Flag = "Slider8",
    Callback = function(Value)
    HeadSizeTransparency = Value
    end,
