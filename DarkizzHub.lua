@@ -792,7 +792,3 @@ local Toggle6 = HitboxTab:CreateToggle({
    end,
 })
 
-while true do
- print(BoxesThickness)
-  task.wait(.5) 
-  end
