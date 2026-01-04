@@ -1,10 +1,11 @@
-print("Executed, dont execute this script more than once!")
 --[[GAME ID CHECK]]
 local GameIdCheck = true
 
 if GameIdCheck == true then
-if game.PlaceId ~= 72920620366355 then game.Players.LocalPlayer:Kick("Darkizz Hub | This game is not supported!") end
+if game.PlaceId ~= 72920620366355 then game.Players.LocalPlayer:Kick("Darkizz Hub | This game is not supported!") return end
 end
+
+print("Executed, dont execute this script more than once!")
 
 --[[Services]]
 local Players = game:GetService("Players")
@@ -543,7 +544,6 @@ local function ModifyRecoil(recoilvale)
         end;
     ]])
 end
-
 
 --[[Rayfield Library]]
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
