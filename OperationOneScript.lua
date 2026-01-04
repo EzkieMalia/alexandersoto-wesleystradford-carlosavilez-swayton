@@ -452,7 +452,7 @@ end)
 --[[Modify Head function]]
 local function HeadSizeModify(Character)
     if Character then print("Head found") end
-    if game.Placeid ~= 72920620366355 then
+    if game.PlaceId ~= 72920620366355 then
     local Head = Character:WaitForChild("Head")
     RunService.RenderStepped:Connect(function()
         if HeadSizeValue == 1 then
@@ -463,24 +463,20 @@ local function HeadSizeModify(Character)
         end
     end)
     else
-    for i,v in pairs(game.Workspace.Viewmodels) do
+    for i,v in pairs(game.Workspace.Viewmodels:GetDescendants()) do
         if v.Name == "Viewmodel" then
-            local PlayerHead = game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head")
-            if PlayerHead then
+            if game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head") then
             RunService.RenderStepped:Connect(function()
                 if HeadSizeValue == 1 then
                 else
-                PlayerHead.Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
-                PlayerHead.CanCollide = false
-                end
-                if PlayerHead then
-                else
-                break
+                game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
+                game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").CanCollide = false
                 end
             end)
             end
         end
     end
+end
 end
 
 --[[Hooking the character function]]
@@ -493,7 +489,7 @@ end)
 
 --[[Another character hook]]
 for i,v in ipairs(Players:GetPlayers()) do
-    if v.Character and v.Character.Head then
+    if v.Character then
         HeadSizeModify(v.Character)
     end
 end
