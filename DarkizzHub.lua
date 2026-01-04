@@ -1,5 +1,5 @@
 --[[GAME ID CHECK]]
-local GameIdCheck = true
+local GameIdCheck = false
 
 if GameIdCheck == true then
 if game.PlaceId ~= 72920620366355 then game.Players.LocalPlayer:Kick("Darkizz Hub | This game is not supported!") return end
@@ -22,10 +22,15 @@ local ScreenPositions = {Vector2.new(ScreenSize.X / 2, ScreenSize.Y), Vector2.ne
 --[[Settings]]
 local FirerateSpeed
 local RecoilValue
+local green = 1
+local red = 0
+local blue = 0
 
 local TracersThickness = 2
 local BoxesThickness = 4
 local HealthBarsThickness = 2
+local NameSize = 14
+local HealthTextSize = 14
 
 local HeadSizeValue = 1
 local HeadSizeTransparency = 0
@@ -41,8 +46,10 @@ local EspHealthBarOutline = false
 local EspName = false
 local EspDrone = false
 local EspDroneOutline = false
+local HealthText = false
 
 --[[Tables]]
+local HealthTexts = {}
 local EspBoxes = {}
 local EspBoxOutlines = {}
 local EspTracers = {}
@@ -62,6 +69,7 @@ local function RemovePlayer(name)
     if EspBoxOutlines[name] then EspBoxOutlines[name].Visible = false; EspBoxOutlines[name]:Remove(); EspBoxOutlines[name] = nil end
 	if EspTracerOutlines[name] then EspTracerOutlines[name].Visible = false; EspTracerOutlines[name]:Remove(); EspTracerOutlines[name] = nil end
 	if EspHealthBarOutlines[name] then EspHealthBarOutlines[name].Visible = false; EspHealthBarOutlines[name]:Remove(); EspHealthBarOutlines[name] = nil end
+    if HealthTexts[name] then HealthTexts[name].Visible = false; HealthTexts[name]:Remove(); HealthTexts[name] = nil end
 end
 
 --[[Remove Players Drone function]]
@@ -75,7 +83,7 @@ local function GetEnemies()
     local Team = LocalPlayer.Team
     local Enemies = {}
     for i,v in pairs(Players:GetChildren()) do
-        if v.Character and Players[v.Name].Team ~= Team then
+        if v.Character and Players[v.Name].Team == Team then
         local Humanoid = v.Character:FindFirstChild("Humanoid")
             if Humanoid and Humanoid.Health > 0 then
                 table.insert(Enemies, v.Character)
@@ -243,12 +251,26 @@ local function MainEsp(target)
 		EspHealths[target.Name] = healthbar
 	end
 
+    if HealthTexts[target.Name] then
+        healthtext = HealthTexts[target.Name]
+    else
+        healthtext = Drawing.new("Text")
+        healthtext.Visible = true
+        healthtext.Color = Color3.new(red, green, blue)
+        healthtext.Size = 12
+        healthtext.Text = target.Humanoid.Health .. "%"
+        healthtext.Outline = true
+        healthtext.OutlineColor = Color3.new(0,0,0)
+        HealthTexts[target.Name] = healthtext
+    end
+
 	local topleft, width = HealthBarCalculations(target)
 	local hWidth = (topleft - width).Magnitude
 	local targethealthloss = Vector2.new(0, (maxY - minY) * (1 - target.Humanoid.Health/100))
 
 	healthbar.Size = Vector2.new(hWidth, (maxY - minY)) - targethealthloss
 	healthbar.Position = Vector2.new(topleft.X - hWidth, minY) + targethealthloss
+    healthtext.Position = Vector2.new(minX - (maxX - minX)/8, minY - healthtext.TextBounds.Y - 4) 
 
 	outline.Size = Vector2.new(hWidth, (maxY - minY)) - targethealthloss
 	outline.Position = Vector2.new(topleft.X - hWidth, minY) + targethealthloss
@@ -264,7 +286,7 @@ local function MainEsp(target)
         end
 		name.Color = Color3.new(1,1,1)
 		name.Text = target.Name
-		name.Size = 20
+		name.Size = 14
 		name.Center = true
 		name.Outline = true
 		name.OutlineColor = Color3.new(0,0,0)
@@ -274,6 +296,7 @@ local function MainEsp(target)
 	name.Position = Vector2.new(minX + (maxX - minX)/2, minY - name.TextBounds.Y - 3)
     if EspName == true then
     EspNames[target.Name].Visible = true
+    EspNames[target.Name].Size = NameSize
     else
     EspNames[target.Name].Visible = false
     end
@@ -298,12 +321,28 @@ local function MainEsp(target)
 	if EspHealth == true then
 		EspHealths[target.Name].Visible = true
 		EspHealthBarOutlines[target.Name].Visible = true
-        EspHealths[target.Name].Thickness = HealthBarsThickness - HealthBarsThickness/4
+        EspHealths[target.Name].Thickness = HealthBarsThickness - 1
         EspHealthBarOutlines[target.Name].Thickness = HealthBarsThickness
 		else
 		EspHealths[target.Name].Visible = false
 		EspHealthBarOutlines[target.Name].Visible = false
 	end
+    if HealthText == true then
+        HealthTexts[target.Name].Visible = true
+        HealthTexts[target.Name].Size = HealthTextSize
+        if target.Humanoid.Health >= 67 or target.Humanoid.Health == 100 then
+        red = 0
+        green = 1
+        elseif target.Humanoid.Health >= 34 and target.Humanoid.Health < 67 then
+        red = 1
+        green = 1
+        elseif target.Humanoid.Health < 34 then
+        red = 1
+        green = 0
+        end
+        else
+        HealthTexts[target.Name].Visible = false
+    end
 end
 
 --[[Drone Esp function]]
@@ -448,6 +487,7 @@ local function HeadSizeModify(Character)
     local Head = Character:WaitForChild("Head")
     RunService.RenderStepped:Connect(function()
         if HeadSizeValue == 1 then
+        Head.Size = Vector3.new(1,1,1)
         else
         Head.Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
         Head.Transparency = HeadSizeTransparency
@@ -466,7 +506,7 @@ local function HeadSizeModify(Character)
     RunService.RenderStepped:Connect(function()
     for i,v in pairs(game.Workspace:GetDescendants())do
     if v.Name == 'head' then
-    if HeadSizeValue == 1 then else
+    if HeadSizeValue == 1 then v.Size = Vector3.new(1,1,1) else
     local success,err = pcall(function()
         v.Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
         v.Transparency = HeadSizeTransparency
@@ -476,8 +516,9 @@ local function HeadSizeModify(Character)
     end
     end
     end
-    end)
     end
+    end)
+end
 end
 
 --[[Hooking the character function]]
@@ -704,20 +745,57 @@ local Slider5 = EspTab:CreateSlider({
 
 local Divider5 = EspTab:CreateDivider()
 
-local Section6 = EspTab:CreateSection("Esp Names")
+local Section6 = EspTab:CreateSection("Health Text")
+
+local Toggle4 = EspTab:CreateToggle({
+   Name = "Health Text",
+   CurrentValue = false,
+   Flag = "Toggle4",
+   Callback = function(Value)
+   HealthText = Value
+   end,
+})
+
+local Slider6 = EspTab:CreateSlider({
+   Name = "Health Text Size",
+   Range = {12, 22},
+   Increment = 1,
+   Suffix = "Size",
+   CurrentValue = 12,
+   Flag = "Slider6",
+   Callback = function(Value)
+   HealthTextSize = Value
+   end,
+})
+
+local Divider6 = EspTab:CreateDivider()
+
+local Section7 = EspTab:CreateSection("Esp Names")
 
 local Toggle4 = EspTab:CreateToggle({
    Name = "Names",
    CurrentValue = false,
    Flag = "Toggle4",
    Callback = function(Value)
-    Name = Value
+    EspName = Value
    end,
 })
 
-local Divider6 = EspTab:CreateDivider()
+local Slider7 = EspTab:CreateSlider({
+   Name = "Name Size",
+   Range = {14, 32},
+   Increment = 1,
+   Suffix = "Size",
+   CurrentValue = 14,
+   Flag = "Slider7",
+   Callback = function(Value)
+   NameSize = Value
+   end,
+})
 
-local Section7 = EspTab:CreateSection("Esp Drones")
+local Divider8 = EspTab:CreateDivider()
+
+local Section8 = EspTab:CreateSection("Esp Drones")
 
 local Toggle5 = EspTab:CreateToggle({
    Name = "Drones",
@@ -728,43 +806,43 @@ local Toggle5 = EspTab:CreateToggle({
    end,
 })
 
-local Divider7 = EspTab:CreateDivider()
+local Divider9 = EspTab:CreateDivider()
 
 --[[Hitbox Expander tab]]
 
 local HitboxTab = Window:CreateTab("Hitboxes", "user")
 
-local Section8 = HitboxTab:CreateSection("Head Size(Attacking)")
+local Section9 = HitboxTab:CreateSection("Head Size(Attacking)")
 
-local Slider6 = HitboxTab:CreateSlider({
+local Slider9 = HitboxTab:CreateSlider({
    Name = "Head Size",
    Range = {1, 5},
    Increment = 1,
    Suffix = "Size",
    CurrentValue = 1,
-   Flag = "Slider6",
+   Flag = "Slider9",
    Callback = function(Value)
    HeadSizeValue = Value
    end,
 })
 
-local Section9 = HitboxTab:CreateSection("Transparency")
+local Section10 = HitboxTab:CreateSection("Transparency")
 
-local Slider7 = HitboxTab:CreateSlider({
+local Slider10 = HitboxTab:CreateSlider({
    Name = "Head Transparency",
    Range = {0, 1},
    Increment = .05,
    Suffix = "Transparency",
    CurrentValue = 0,
-   Flag = "Slider7",
+   Flag = "Slider10",
    Callback = function(Value)
    HeadSizeTransparency = Value
    end,
 })
 
-local Divider8 = HitboxTab:CreateDivider()
+local Divider10 = HitboxTab:CreateDivider()
 
-local Section10 = HitboxTab:CreateSection("Silent Aim (W.I.P) ⚠️")
+local Section11 = HitboxTab:CreateSection("Silent Aim (W.I.P) ⚠️")
 
 local Toggle6 = HitboxTab:CreateToggle({
    Name = "Silent Aim",
