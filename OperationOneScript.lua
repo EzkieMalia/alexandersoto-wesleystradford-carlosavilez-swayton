@@ -1,3 +1,11 @@
+--[[GAME ID CHECK]]
+local GameIdCheck = true
+
+if GameIdCheck == true then
+if game.PlaceId ~= 72920620366355 then game.Players.LocalPlayer:Kick("Darkizz Hub | This game is not supported!") end
+end
+
+--[[Services]]
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
@@ -444,6 +452,7 @@ end)
 --[[Modify Head function]]
 local function HeadSizeModify(Character)
     if Character then print("Head found") end
+    if game.Placeid ~= 72920620366355 then
     local Head = Character:WaitForChild("Head")
     RunService.RenderStepped:Connect(function()
         if HeadSizeValue == 1 then
@@ -453,6 +462,25 @@ local function HeadSizeModify(Character)
         Head.CanCollide = false
         end
     end)
+    else
+    for i,v in pairs(game.Workspace.Viewmodels) do
+        if v.Name == "Viewmodel" then
+            local PlayerHead = game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head")
+            if PlayerHead then
+            RunService.RenderStepped:Connect(function()
+                if HeadSizeValue == 1 then
+                else
+                PlayerHead.Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
+                PlayerHead.CanCollide = false
+                end
+                if PlayerHead then
+                else
+                break
+                end
+            end)
+            end
+        end
+    end
 end
 
 --[[Hooking the character function]]
@@ -679,7 +707,7 @@ local Section8 = HitboxTab:CreateSection("Head Size")
 
 local Slider3 = HitboxTab:CreateSlider({
    Name = "Head Size",
-   Range = {1, 6},
+   Range = {1, 5},
    Increment = 1,
    Suffix = "Size",
    CurrentValue = 1,
