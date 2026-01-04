@@ -270,7 +270,7 @@ local function MainEsp(target)
 
 	healthbar.Size = Vector2.new(hWidth, (maxY - minY)) - targethealthloss
 	healthbar.Position = Vector2.new(topleft.X - hWidth, minY) + targethealthloss
-    healthtext.Position = Vector2.new(minX - (maxX - minX)/8, minY - healthtext.TextBounds.Y - 4) 
+    healthtext.Position = Vector2.new(minX - (maxX - minX)/6, minY - healthtext.TextBounds.Y - 4) 
 
 	outline.Size = Vector2.new(hWidth, (maxY - minY)) - targethealthloss
 	outline.Position = Vector2.new(topleft.X - hWidth, minY) + targethealthloss
