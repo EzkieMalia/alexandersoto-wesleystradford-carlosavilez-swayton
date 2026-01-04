@@ -462,19 +462,22 @@ local function HeadSizeModify(Character)
         end
     return old(self,key)
     end)
-    task.wait(2.5)
+    task.wait(.5)
     for i,v in pairs(game.Workspace.Viewmodels:GetDescendants()) do
         if v.Name == "Viewmodel" then
             local PlayerHeadLoop = RunService.RenderStepped:Connect(function()
                 if HeadSizeValue == 1 then
                 else
                 local success, err = pcall(function()
-                game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
-                game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").CanCollide = false
-                game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").Transparency = HeadSizeTransparency
+                for c,b in pairs(v:GetDescendants()) do
+                b:FindFirstChild("head").Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
+                b:FindFirstChild("head").CanCollide = false
+                b:FindFirstChild("head").Transparency = HeadSizeTransparency
+                end
                 end)
                 if success then
                 elseif err then
+                PlayerHeadLoop = nil
                 end
                 end
             end)
