@@ -1,5 +1,5 @@
 --[[GAME ID CHECK]]
-local GameIdCheck = false
+local GameIdCheck = true
 
 if GameIdCheck == true then
 if game.PlaceId ~= 72920620366355 then game.Players.LocalPlayer:Kick("Darkizz Hub | This game is not supported!") return end
@@ -23,10 +23,10 @@ local ScreenPositions = {Vector2.new(ScreenSize.X / 2, ScreenSize.Y), Vector2.ne
 local FirerateSpeed
 local RecoilValue
 
-local TracersThickness
-local BoxesThickness
-local HealthBarsThickness
-local NameSize
+local TracersThickness = 2
+local BoxesThickness = 4
+local HealthBarsThickness = 2
+local NameSize = 12
 
 local HeadSizeValue = 1
 local HeadSizeTransparency = 0
@@ -275,12 +275,15 @@ local function MainEsp(target)
 	name.Position = Vector2.new(minX + (maxX - minX)/2, minY - name.TextBounds.Y - 3)
     if EspName == true then
     EspNames[target.Name].Visible = true
+    EspNames[target.Name].Size = NameSize
     else
     EspNames[target.Name].Visible = false
     end
     if EspBox == true then
     EspBoxes[target.Name].Visible = true
     EspBoxOutlines[target.Name].Visible = true
+    EspBoxes[target.Name].Thickness = BoxesThickness - BoxesThickness/2
+    EspBoxOutlines[target.Name].Thickness = BoxesThickness
     else
     EspBoxes[target.Name].Visible = false
     EspBoxOutlines[target.Name].Visible = false
@@ -288,36 +291,20 @@ local function MainEsp(target)
     if EspTracer == true then
     EspTracers[target.Name].Visible = true
     EspTracerOutlines[target.Name].Visible = true
+    EspTracers[target.Name].Thickness = TracersThickness - TracersThickness/2
+    EspTracerOutlines[target.Name].Thickness = TracersThickness
     else
     EspTracers[target.Name].Visible = false
     EspTracerOutlines[target.Name].Visible = false
     end
-
-	if EspBox == true then
-		EspBoxes[target.Name].Visible = true
-		EspBoxOutlines[target.Name].Visible = true
-		else
-		EspBoxes[target.Name].Visible = false
-		EspBoxOutlines[target.Name].Visible = false
-    end
-	if EspTracer == true then
-		EspTracers[target.Name].Visible = true
-		EspTracerOutlines[target.Name].Visible = true
-		else
-		EspTracers[target.Name].Visible = false
-		EspTracerOutlines[target.Name].Visible = false
-	end
 	if EspHealth == true then
 		EspHealths[target.Name].Visible = true
 		EspHealthBarOutlines[target.Name].Visible = true
+        EspHealths[target.Name].Thickness = HealthBarsThickness - HealthBarsThickness/4
+        EspHealthBarOutlines[target.Name].Thickness = HealthBarsThickness
 		else
 		EspHealths[target.Name].Visible = false
 		EspHealthBarOutlines[target.Name].Visible = false
-	end
-	if EspName == true then
-	EspNames[target.Name].Visible = true
-	else
-	EspNames[target.Name].Visible = false
 	end
 end
 
@@ -470,6 +457,13 @@ local function HeadSizeModify(Character)
         end
     end)
     else
+    local old
+    old = hookmetamethod(game,"__index",function(self,key)
+        if self == Character and key == "head" then
+        return Vector3.new(1,1,1)
+        end
+    return old(self,key)
+    end)
     task.wait(1)
     for i,v in pairs(game.Workspace.Viewmodels:GetDescendants()) do
         if v.Name == "Viewmodel" then
@@ -653,7 +647,7 @@ local Toggle = EspTab:CreateToggle({
 
 local Slider3 = EspTab:CreateSlider({
    Name = "Boxes Thickness",
-   Range = {2, 10},
+   Range = {4, 16},
    Increment = 1,
    Suffix = "Thickness",
    CurrentValue = 2,
@@ -709,7 +703,7 @@ local Slider5 = EspTab:CreateSlider({
    CurrentValue = 2,
    Flag = "Slider5",
    Callback = function(Value)
-   TracersThickness = Value
+   HealthBarsThickness = Value
    end,
 })
 
@@ -722,7 +716,7 @@ local Toggle4 = EspTab:CreateToggle({
    CurrentValue = false,
    Flag = "Toggle4",
    Callback = function(Value)
-    NameSize = Value
+    Name = Value
    end,
 })
 
@@ -731,7 +725,7 @@ local Slider6 = EspTab:CreateSlider({
    Range = {12, 32},
    Increment = 1,
    Suffix = "Thickness",
-   CurrentValue = 2,
+   CurrentValue = 12,
    Flag = "Slider5",
    Callback = function(Value)
    NameSize = Value
@@ -797,3 +791,8 @@ local Toggle6 = HitboxTab:CreateToggle({
     SilentAim = Value
    end,
 })
+
+while true do
+ print(BoxesThickness)
+  task.wait(.5) 
+  end
