@@ -504,7 +504,7 @@ local function ModifyFirerate(fireratesped)
         if (Flash) then
             local oldfirerate; oldfirerate = hookfunction(v.recoil_function, function(gun_table, gun_instance)
                 local weapon_states = gun_table["object"]["states"];
-                weapon_states.firerate:set((fireratesped))
+                weapon_states.firerate:set((2250))
                 return oldfirerate(gun_table, gun_instance)
                 end);
             end;
@@ -525,8 +525,8 @@ local function ModifyRecoil(recoilvale)
         if (Flash) then
             local oldfirerate; oldfirerate = hookfunction(v.recoil_function, function(gun_table, gun_instance)
                 local weapon_states = gun_table["object"]["states"];
-                weapon_states.recoil_up:set((recoilvale))
-                weapon_states.recoil_side:set((recoilvale))
+                weapon_states.recoil_up:set((0))
+                weapon_states.recoil_side:set((0))
                 return oldfirerate(gun_table, gun_instance)
                 end);
             end;
