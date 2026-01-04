@@ -1,5 +1,5 @@
 --[[GAME ID CHECK]]
-local GameIdCheck = false
+local GameIdCheck = true
 
 if GameIdCheck == true then
 if game.PlaceId ~= 72920620366355 then game.Players.LocalPlayer:Kick("Darkizz Hub | This game is not supported!") return end
