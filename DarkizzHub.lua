@@ -463,24 +463,17 @@ local function HeadSizeModify(Character)
     return old(self,key)
     end)
     task.wait(.5)
-    for i,v in pairs(game.Workspace.Viewmodels:GetDescendants()) do
-        if v.Name == "Viewmodel" then
-            local PlayerHeadLoop = RunService.RenderStepped:Connect(function()
-                if HeadSizeValue == 1 then
-                else
-                local success, err = pcall(function()
-                v.Viewmodel:FindFirstChild("head").Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
-                v.Viewmodel:FindFirstChild("head").CanCollide = false
-                v.Viewmodel:FindFirstChild("head").Transparency = HeadSizeTransparency
-                end)
-                if success then
-                elseif err then
-                PlayerHeadLoop = nil
-                end
-                end
-            end)
-        end
+    RunService.RenderStepped:Connect(function()
+    if HeadSizeValue == 1 then else
+    local success,err = pcall(function()
+        game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
+        game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").Transparency = HeadSizeTransparency
+    end)
+    if success then
+    elseif err then
     end
+    end
+    end)
     end
 end
 
@@ -511,7 +504,7 @@ local function ModifyFirerate(fireratesped)
         if (Flash) then
             local oldfirerate; oldfirerate = hookfunction(v.recoil_function, function(gun_table, gun_instance)
                 local weapon_states = gun_table["object"]["states"];
-                weapon_states.firerate:set((2250))
+                weapon_states.firerate:set((fireratesped))
                 return oldfirerate(gun_table, gun_instance)
                 end);
             end;
@@ -532,8 +525,8 @@ local function ModifyRecoil(recoilvale)
         if (Flash) then
             local oldfirerate; oldfirerate = hookfunction(v.recoil_function, function(gun_table, gun_instance)
                 local weapon_states = gun_table["object"]["states"];
-                weapon_states.recoil_up:set((0))
-                weapon_states.recoil_side:set((0))
+                weapon_states.recoil_up:set((recoilvale))
+                weapon_states.recoil_side:set((recoilvale))
                 return oldfirerate(gun_table, gun_instance)
                 end);
             end;
