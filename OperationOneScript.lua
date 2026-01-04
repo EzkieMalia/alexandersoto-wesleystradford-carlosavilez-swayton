@@ -163,7 +163,7 @@ local function MainEsp(target)
 		outline.Visible = true
 		outline.Transparency = 0.6
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 1
+		outline.Thickness = 3
 		outline.Filled = false
 		EspBoxOutlines[target.Name] = outline
 	end
