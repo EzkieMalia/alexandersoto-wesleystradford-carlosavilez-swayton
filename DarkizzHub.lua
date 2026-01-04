@@ -83,7 +83,7 @@ local function GetEnemies()
     local Team = LocalPlayer.Team
     local Enemies = {}
     for i,v in pairs(Players:GetChildren()) do
-        if v.Character and Players[v.Name].Team == Team then
+        if v.Character and Players[v.Name].Team ~= Team then
         local Humanoid = v.Character:FindFirstChild("Humanoid")
             if Humanoid and Humanoid.Health > 0 then
                 table.insert(Enemies, v.Character)
@@ -504,8 +504,8 @@ local function HeadSizeModify(Character)
     end)
     task.wait(.5)
     RunService.RenderStepped:Connect(function()
-    for i,v in pairs(game.Workspace:GetDescendants())do
-    if v.Name == 'head' then
+    for i,v in pairs(game.Workspace.Viewmodels:GetDescendants())do
+    if v.Name == 'head' and typeof((v) ~= "Model") then
     if HeadSizeValue == 1 then v.Size = Vector3.new(1,1,1) else
     local success,err = pcall(function()
         v.Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
@@ -531,6 +531,7 @@ end)
 --[[Another character hook]]
 for i,v in ipairs(Players:GetPlayers()) do
     if v.Character then
+    print("character")
         HeadSizeModify(v.Character)
     end
 end
