@@ -13,6 +13,11 @@ local ScreenPositions = {Vector2.new(ScreenSize.X / 2, ScreenSize.Y), Vector2.ne
 local FirerateSpeed
 local RecoilValue
 
+local HeadSizeValue = 1
+local HeadSizeTransparency = 0
+
+local SilentAim = false
+
 local EspBox = false
 local EspBoxOutline = false
 local EspTracer = false
@@ -436,6 +441,35 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
+--[[Modify Head function]]
+local function HeadSizeModify(Character)
+    if Character then print("Head found") end
+    local Head = Character:WaitForChild("Head")
+    RunService.RenderStepped:Connect(function()
+        if HeadSizeValue == 1 then
+        else
+        Head.Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
+        Head.Transparency = HeadSizeTransparency
+        Head.CanCollide = false
+        end
+    end)
+end
+
+--[[Hooking the character function]]
+Players.PlayerAdded:Connect(function(plr)
+    plr.CharacterAdded:Connect(function(char)
+    print("Character Added")
+    HeadSizeModify(char)
+    end)
+end)
+
+--[[Another character hook]]
+for i,v in ipairs(Players:GetPlayers()) do
+    if v.Character and v.Character.Head then
+        HeadSizeModify(v.Character)
+    end
+end
+
 --[[Modify Firerate function]]
 local function ModifyFirerate(fireratesped)
     local Actors = getactors()[1]
@@ -507,15 +541,15 @@ local Window = Rayfield:CreateWindow({
       Invite = "noinvitelink", 
       RememberJoins = true 
    },
-   KeySystem = false, 
+   KeySystem = true, 
    KeySettings = {
-      Title = "Untitled",
-      Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided", 
+      Title = "Darkizz Hub",
+      Subtitle = "Verification Step",
+      Note = "Ask Darkizz for the key.", 
       FileName = "Key", 
       SaveKey = true, 
       GrabKeyFromSite = false, 
-      Key = {"Hello"} 
+      Key = {"Carlos"} 
    }
 })
 
@@ -637,3 +671,47 @@ local Toggle5 = EspTab:CreateToggle({
 
 local Divider7 = EspTab:CreateDivider()
 
+--[[Hitbox Expander tab]]
+
+local HitboxTab = Window:CreateTab("Hitboxes", "user")
+
+local Section8 = HitboxTab:CreateSection("Head Size")
+
+local Slider3 = HitboxTab:CreateSlider({
+   Name = "Head Size",
+   Range = {1, 6},
+   Increment = 1,
+   Suffix = "Size",
+   CurrentValue = 1,
+   Flag = "Slider3",
+   Callback = function(Value)
+   HeadSizeValue = Value
+   end,
+})
+
+local Section9 = HitboxTab:CreateSection("Transparency")
+
+local Slider4 = HitboxTab:CreateSlider({
+   Name = "Head Transparency",
+   Range = {0, 1},
+   Increment = .05,
+   Suffix = "Transparency",
+   CurrentValue = 0,
+   Flag = "Slider4",
+   Callback = function(Value)
+   HeadSizeTransparency = Value
+   end,
+})
+
+local Divider8 = HitboxTab:CreateDivider()
+
+local Section10 = HitboxTab:CreateSection("Silent Aim (W.I.P) ⚠️")
+
+local Toggle6 = HitboxTab:CreateToggle({
+   Name = "Silent Aim",
+   CurrentValue = false,
+   Flag = "Toggle6",
+   Callback = function(Value)
+    SilentAim = Value
+   end,
+})
