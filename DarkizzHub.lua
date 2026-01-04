@@ -469,11 +469,9 @@ local function HeadSizeModify(Character)
                 if HeadSizeValue == 1 then
                 else
                 local success, err = pcall(function()
-                for c,b in pairs(v:GetDescendants()) do
-                b:FindFirstChild("head").Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
-                b:FindFirstChild("head").CanCollide = false
-                b:FindFirstChild("head").Transparency = HeadSizeTransparency
-                end
+                v.Viewmodel:FindFirstChild("head").Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
+                v.Viewmodel:FindFirstChild("head").CanCollide = false
+                v.Viewmodel:FindFirstChild("head").Transparency = HeadSizeTransparency
                 end)
                 if success then
                 elseif err then
