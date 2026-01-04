@@ -467,7 +467,6 @@ local function HeadSizeModify(Character)
     else
     task.wait(1)
     for i,v in pairs(game.Workspace.Viewmodels:GetDescendants()) do
-    RunService.RenderStepped:Connect(function()
         if v.Name == "Viewmodel" then
             local PlayerHeadLoop = RunService.RenderStepped:Connect(function()
                 if HeadSizeValue == 1 then
@@ -482,7 +481,6 @@ local function HeadSizeModify(Character)
                 end
             end)
         end
-    end)
     end
     end
 end
