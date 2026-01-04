@@ -495,13 +495,6 @@ local function HeadSizeModify(Character)
         end
     end)
     else
-    local old
-    old = hookmetamethod(game,"__index",function(self,key)
-        if self == Character and key == "head" then
-        return Vector3.new(1,1,1)
-        end
-    return old(self,key)
-    end)
     task.wait(.5)
     RunService.RenderStepped:Connect(function()
     for i,v in pairs(game.Workspace.Viewmodels:GetDescendants())do
