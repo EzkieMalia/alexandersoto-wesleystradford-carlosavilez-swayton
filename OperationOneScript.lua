@@ -1,3 +1,4 @@
+print("Executed, dont execute this script more than once!")
 --[[GAME ID CHECK]]
 local GameIdCheck = true
 
@@ -463,26 +464,26 @@ local function HeadSizeModify(Character)
         end
     end)
     else
-    task.wait(3)
+    task.wait(1)
     for i,v in pairs(game.Workspace.Viewmodels:GetDescendants()) do
+    RunService.RenderStepped:Connect(function()
         if v.Name == "Viewmodel" then
-            if game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head") then
-            local PlayerHeadChanger = RunService.RenderStepped:Connect(function()
+            local PlayerHeadLoop = RunService.RenderStepped:Connect(function()
                 if HeadSizeValue == 1 then
                 else
+                local success, err = pcall(function()
                 game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
                 game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").CanCollide = false
+                end)
+                if success then
+                elseif err then
                 end
-                if game.Workspace.Viewmodels.Viewmodel then
-                else
-                PlayerHeadChanger:Disconnect()
-                PlayerHeadChanger = nil
                 end
             end)
-            end
         end
     end
-end
+    end
+    end)
 end
 
 --[[Hooking the character function]]
