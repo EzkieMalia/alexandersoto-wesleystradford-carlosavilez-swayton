@@ -481,9 +481,9 @@ local function HeadSizeModify(Character)
                 end
             end)
         end
-    end
-    end
     end)
+    end
+    end
 end
 
 --[[Hooking the character function]]
