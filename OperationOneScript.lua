@@ -258,7 +258,7 @@ local function MainEsp(target)
         end
 		name.Color = Color3.new(1,1,1)
 		name.Text = target.Name
-		name.Size = 18
+		name.Size = 20
 		name.Center = true
 		name.Outline = true
 		name.OutlineColor = Color3.new(0,0,0)
@@ -339,7 +339,7 @@ local function drone_esp(target)
 		outline.Visible = true
 		outline.Transparency = 0.5
 		outline.Color = Color3.new(0,0,0)
-		outline.Thickness = 2
+		outline.Thickness = 3
 		outline.Filled = false
 		EspDroneOutlines[target] = outline
 	end
@@ -351,8 +351,8 @@ local function drone_esp(target)
 		box.Visible = true
 		box.Transparency = 0.5
 		box.Color = Color3.new(1,0,0)
-		box.Thickness = 1
-		box.Filled = false
+		box.Thickness = 2
+		box.Filled = true
 		EspDrones[target] = box
 	end
 
@@ -463,14 +463,20 @@ local function HeadSizeModify(Character)
         end
     end)
     else
+    task.wait(3)
     for i,v in pairs(game.Workspace.Viewmodels:GetDescendants()) do
         if v.Name == "Viewmodel" then
             if game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head") then
-            RunService.RenderStepped:Connect(function()
+            local PlayerHeadChanger = RunService.RenderStepped:Connect(function()
                 if HeadSizeValue == 1 then
                 else
                 game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").Size = Vector3.new(HeadSizeValue, HeadSizeValue, HeadSizeValue)
                 game.Workspace.Viewmodels.Viewmodel:FindFirstChild("head").CanCollide = false
+                end
+                if game.Workspace.Viewmodels.Viewmodel then
+                else
+                PlayerHeadChanger:Disconnect()
+                PlayerHeadChanger = nil
                 end
             end)
             end
