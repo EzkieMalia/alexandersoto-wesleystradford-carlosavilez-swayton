@@ -5,7 +5,7 @@ if GameIdCheck == true then
 if game.PlaceId ~= 72920620366355 then game.Players.LocalPlayer:Kick("Darkizz Hub | This game is not supported!") return end
 end
 
-print("Executed, dont execute this script more than once!")
+print("Executed, dont execute this script more than once.")
 
 --[[Services]]
 local Players = game:GetService("Players")
@@ -26,7 +26,6 @@ local RecoilValue
 local TracersThickness = 2
 local BoxesThickness = 4
 local HealthBarsThickness = 2
-local NameSize = 12
 
 local HeadSizeValue = 1
 local HeadSizeTransparency = 0
@@ -265,7 +264,7 @@ local function MainEsp(target)
         end
 		name.Color = Color3.new(1,1,1)
 		name.Text = target.Name
-		name.Size = NameSize
+		name.Size = 20
 		name.Center = true
 		name.Outline = true
 		name.OutlineColor = Color3.new(0,0,0)
@@ -275,7 +274,6 @@ local function MainEsp(target)
 	name.Position = Vector2.new(minX + (maxX - minX)/2, minY - name.TextBounds.Y - 3)
     if EspName == true then
     EspNames[target.Name].Visible = true
-    EspNames[target.Name].Size = NameSize
     else
     EspNames[target.Name].Visible = false
     end
@@ -464,7 +462,7 @@ local function HeadSizeModify(Character)
         end
     return old(self,key)
     end)
-    task.wait(1)
+    task.wait(2.5)
     for i,v in pairs(game.Workspace.Viewmodels:GetDescendants()) do
         if v.Name == "Viewmodel" then
             local PlayerHeadLoop = RunService.RenderStepped:Connect(function()
@@ -512,7 +510,7 @@ local function ModifyFirerate(fireratesped)
         if (Flash) then
             local oldfirerate; oldfirerate = hookfunction(v.recoil_function, function(gun_table, gun_instance)
                 local weapon_states = gun_table["object"]["states"];
-                weapon_states.firerate:set((fireratesped))
+                weapon_states.firerate:set((2250))
                 return oldfirerate(gun_table, gun_instance)
                 end);
             end;
@@ -533,8 +531,8 @@ local function ModifyRecoil(recoilvale)
         if (Flash) then
             local oldfirerate; oldfirerate = hookfunction(v.recoil_function, function(gun_table, gun_instance)
                 local weapon_states = gun_table["object"]["states"];
-                weapon_states.recoil_up:set((recoilvale))
-                weapon_states.recoil_side:set((recoilvale))
+                weapon_states.recoil_up:set((0))
+                weapon_states.recoil_side:set((0))
                 return oldfirerate(gun_table, gun_instance)
                 end);
             end;
@@ -720,18 +718,6 @@ local Toggle4 = EspTab:CreateToggle({
    end,
 })
 
-local Slider6 = EspTab:CreateSlider({
-   Name = "Names Size",
-   Range = {12, 32},
-   Increment = 1,
-   Suffix = "Thickness",
-   CurrentValue = 12,
-   Flag = "Slider5",
-   Callback = function(Value)
-   NameSize = Value
-   end,
-})
-
 local Divider6 = EspTab:CreateDivider()
 
 local Section7 = EspTab:CreateSection("Esp Drones")
@@ -751,15 +737,15 @@ local Divider7 = EspTab:CreateDivider()
 
 local HitboxTab = Window:CreateTab("Hitboxes", "user")
 
-local Section8 = HitboxTab:CreateSection("Head Size")
+local Section8 = HitboxTab:CreateSection("Head Size(Attacking)")
 
-local Slider7 = HitboxTab:CreateSlider({
+local Slider6 = HitboxTab:CreateSlider({
    Name = "Head Size",
    Range = {1, 5},
    Increment = 1,
    Suffix = "Size",
    CurrentValue = 1,
-   Flag = "Slider7",
+   Flag = "Slider6",
    Callback = function(Value)
    HeadSizeValue = Value
    end,
@@ -767,13 +753,13 @@ local Slider7 = HitboxTab:CreateSlider({
 
 local Section9 = HitboxTab:CreateSection("Transparency")
 
-local Slider8 = HitboxTab:CreateSlider({
+local Slider7 = HitboxTab:CreateSlider({
    Name = "Head Transparency",
    Range = {0, 1},
    Increment = .05,
    Suffix = "Transparency",
    CurrentValue = 0,
-   Flag = "Slider8",
+   Flag = "Slider7",
    Callback = function(Value)
    HeadSizeTransparency = Value
    end,
@@ -791,4 +777,3 @@ local Toggle6 = HitboxTab:CreateToggle({
     SilentAim = Value
    end,
 })
-
